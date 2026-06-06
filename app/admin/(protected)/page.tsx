@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { dbConfigured } from "@/lib/db";
 import { getBranches, getCourses } from "@/lib/content";
+import InitDbButton from "@/components/admin/InitDbButton";
 
 export default async function AdminDashboard() {
   const [courses, branches] = await Promise.all([getCourses(), getBranches()]);
@@ -35,6 +36,24 @@ export default async function AdminDashboard() {
             <div className="mt-3 text-sm font-semibold text-brand">Manage →</div>
           </Link>
         ))}
+      </div>
+
+      {/* First-run setup */}
+      <div className="mt-8 rounded-xl border border-gray-200 bg-gray-50 p-5">
+        <h2 className="text-sm font-semibold text-gray-900">Database setup</h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Run once after deploying to create the tables and load the starter content. Safe to
+          run again — it won&apos;t duplicate anything.
+        </p>
+        {dbConfigured ? (
+          <div className="mt-3">
+            <InitDbButton />
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-amber-700">
+            Database not connected yet — set the DB_* environment variables first.
+          </p>
+        )}
       </div>
     </div>
   );
