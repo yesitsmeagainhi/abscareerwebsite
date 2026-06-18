@@ -11,7 +11,7 @@ import { formatDate, whatsappLink } from "@/lib/site";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return getBlogSlugs().map((post) => ({ post }));
+  return (await getBlogSlugs()).map((post) => ({ post }));
 }
 
 export async function generateMetadata({
@@ -20,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ post: string }>;
 }): Promise<Metadata> {
   const { post: slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await getBlogPost(slug);
   if (!post) return { title: "Article not found" };
   return {
     title: { absolute: `${post.title} | ABS` },
@@ -42,11 +42,13 @@ export default async function BlogPostPage({
   params: Promise<{ post: string }>;
 }) {
   const { post: slug } = await params;
-  const post = getBlogPost(slug);
+  const [post, settings, courses, allPosts] = await Promise.all([
+    getBlogPost(slug),
+    getSiteSettings(),
+    getCourses(),
+    getBlogPosts(),
+  ]);
   if (!post) notFound();
-
-  const [settings, courses] = await Promise.all([getSiteSettings(), getCourses()]);
-  const allPosts = getBlogPosts();
 
   const relatedCourses = (post.relatedCourses || [])
     .map((s) => courses.find((c) => c.slug === s))

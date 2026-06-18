@@ -5,13 +5,15 @@ import { redirect } from "next/navigation";
 
 import { checkPassword, createSession, destroySession, requireAdmin } from "@/lib/auth";
 import {
+  deleteBlogPost,
   deleteBranch,
   deleteCourse,
+  saveBlogPost,
   saveBranch,
   saveCourse,
   saveSettings,
 } from "@/lib/admin-content";
-import type { Branch, Course, FAQ, SiteSettings } from "@/lib/types";
+import type { BlogPost, Branch, Course, FAQ, SiteSettings } from "@/lib/types";
 
 // --- form parsing helpers ---
 function str(v: FormDataEntryValue | null): string {
@@ -142,6 +144,55 @@ export async function deleteBranchAction(formData: FormData) {
   if (id) await deleteBranch(id);
   revalidatePath("/", "layout");
   redirect("/admin/branches");
+}
+
+// --- blog ---
+/** Split on commas or newlines (for tags), trimmed, non-empty. */
+function csv(v: FormDataEntryValue | null): string[] {
+  return String(v ?? "")
+    .split(/[,\n]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+/** Today as an ISO date (YYYY-MM-DD). */
+function today(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export async function saveBlogAction(formData: FormData) {
+  await requireAdmin();
+  const idRaw = str(formData.get("id"));
+  const id = idRaw && idRaw !== "new" ? Number(idRaw) : null;
+  const post: BlogPost = {
+    slug: str(formData.get("slug")),
+    title: str(formData.get("title")),
+    description: str(formData.get("description")),
+    excerpt: opt(formData.get("excerpt")),
+    datePublished: str(formData.get("datePublished")) || today(),
+    // Freshness signal: bumped to today on every save (E-E-A-T).
+    dateModified: today(),
+    author: opt(formData.get("author")),
+    tags: csv(formData.get("tags")),
+    heroImage: opt(formData.get("heroImage")),
+    bodyHtml: str(formData.get("bodyHtml")),
+    faqs: parseFaqs(formData.get("faqs")),
+    relatedCourses: lines(formData.get("relatedCourses")),
+    relatedPosts: lines(formData.get("relatedPosts")),
+  };
+  if (!post.slug || !post.title || !post.bodyHtml) {
+    redirect(`/admin/blog/${id ?? "new"}?error=required`);
+  }
+  await saveBlogPost(id, post);
+  revalidatePath("/", "layout");
+  redirect("/admin/blog");
+}
+
+export async function deleteBlogAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(str(formData.get("id")));
+  if (id) await deleteBlogPost(id);
+  revalidatePath("/", "layout");
+  redirect("/admin/blog");
 }
 
 // --- settings ---

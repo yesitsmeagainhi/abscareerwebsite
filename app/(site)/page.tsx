@@ -38,13 +38,14 @@ const WHY = [
 ];
 
 export default async function HomePage() {
-  const [settings, courses, branches] = await Promise.all([
+  const [settings, courses, branches, allPosts] = await Promise.all([
     getSiteSettings(),
     getCourses(),
     getBranches(),
+    getBlogPosts(),
   ]);
   const courseTitles = courses.map((c) => c.courseShortName || c.title);
-  const posts = getBlogPosts().slice(0, 4);
+  const posts = allPosts.slice(0, 4);
   // A few high-intent local searches for internal linking from the homepage.
   const popularSearches = courses
     .slice(0, 3)

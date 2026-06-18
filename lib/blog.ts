@@ -1,3 +1,4 @@
+import { dbConfigured, query } from "./db";
 import type { BlogPost } from "./types";
 
 // ---------------------------------------------------------------------------
@@ -263,15 +264,56 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-// Sorted newest-first for listings.
-export function getBlogPosts(): BlogPost[] {
-  return [...blogPosts].sort((a, b) => (a.datePublished < b.datePublished ? 1 : -1));
+// --- Public data layer: DB-first (so the admin can publish), seed fallback. ---
+// Mirrors lib/content.ts. All getters are async because they may hit MySQL.
+
+type Row = { slug?: string; data: unknown };
+
+function parseData(data: unknown): BlogPost {
+  return (typeof data === "string" ? JSON.parse(data) : data) as BlogPost;
 }
 
-export function getBlogPost(slug: string): BlogPost | null {
+function byDateDesc(a: BlogPost, b: BlogPost): number {
+  return a.datePublished < b.datePublished ? 1 : -1;
+}
+
+/** Newest-first list of posts. */
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  if (dbConfigured) {
+    try {
+      const rows = await query<Row>("SELECT slug, data FROM blog_posts");
+      if (rows.length) {
+        return rows.map((r) => ({ ...parseData(r.data), slug: r.slug! })).sort(byDateDesc);
+      }
+    } catch {
+      // fall through to seed
+    }
+  }
+  return [...blogPosts].sort(byDateDesc);
+}
+
+export async function getBlogPost(slug: string): Promise<BlogPost | null> {
+  if (dbConfigured) {
+    try {
+      const rows = await query<Row>("SELECT slug, data FROM blog_posts WHERE slug = ? LIMIT 1", [
+        slug,
+      ]);
+      if (rows.length) return { ...parseData(rows[0].data), slug: rows[0].slug! };
+    } catch {
+      // fall through
+    }
+  }
   return blogPosts.find((p) => p.slug === slug) ?? null;
 }
 
-export function getBlogSlugs(): string[] {
+export async function getBlogSlugs(): Promise<string[]> {
+  if (dbConfigured) {
+    try {
+      const rows = await query<{ slug: string }>("SELECT slug FROM blog_posts");
+      if (rows.length) return rows.map((r) => r.slug);
+    } catch {
+      // fall through
+    }
+  }
   return blogPosts.map((p) => p.slug);
 }

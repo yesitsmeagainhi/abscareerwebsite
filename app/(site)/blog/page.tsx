@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
-export default function BlogIndexPage() {
-  const posts = getBlogPosts();
+export default async function BlogIndexPage() {
+  const posts = await getBlogPosts();
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Blog", path: "/blog" },

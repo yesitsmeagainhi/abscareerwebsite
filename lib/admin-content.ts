@@ -1,7 +1,7 @@
 import type { ResultSetHeader } from "mysql2";
 
 import { dbConfigured, getPool, query } from "./db";
-import type { Branch, Course, Lead, SiteSettings } from "./types";
+import type { BlogPost, Branch, Course, Lead, SiteSettings } from "./types";
 
 // Admin CRUD layer (id-based). Unlike lib/content.ts (public, slug-based with
 // seed fallback), these operate directly on MySQL and require a DB connection.
@@ -100,6 +100,47 @@ export async function saveBranch(id: number | null, branch: Branch): Promise<num
 export async function deleteBranch(id: number): Promise<void> {
   ensureDb();
   await getPool().execute("DELETE FROM branches WHERE id = ?", [id]);
+}
+
+// ---------- Blog posts ----------
+export async function listBlogAdmin(): Promise<(BlogPost & { id: number })[]> {
+  ensureDb();
+  const rows = await query<DocRow>(
+    "SELECT id, slug, sort_order, data FROM blog_posts ORDER BY id DESC",
+  );
+  return rows.map((r) => ({ ...parse<BlogPost>(r.data), slug: r.slug, id: r.id }));
+}
+
+export async function getBlogById(id: number): Promise<(BlogPost & { id: number }) | null> {
+  ensureDb();
+  const rows = await query<DocRow>("SELECT id, slug, sort_order, data FROM blog_posts WHERE id = ?", [
+    id,
+  ]);
+  if (!rows.length) return null;
+  const r = rows[0];
+  return { ...parse<BlogPost>(r.data), slug: r.slug, id: r.id };
+}
+
+export async function saveBlogPost(id: number | null, post: BlogPost): Promise<number> {
+  ensureDb();
+  const data = JSON.stringify(post);
+  if (id) {
+    await getPool().execute(
+      "UPDATE blog_posts SET slug = ?, data = ?, updated_at = NOW() WHERE id = ?",
+      [post.slug, data, id],
+    );
+    return id;
+  }
+  const [res] = await getPool().execute<ResultSetHeader>(
+    "INSERT INTO blog_posts (slug, sort_order, data) VALUES (?, 100, ?)",
+    [post.slug, data],
+  );
+  return res.insertId;
+}
+
+export async function deleteBlogPost(id: number): Promise<void> {
+  ensureDb();
+  await getPool().execute("DELETE FROM blog_posts WHERE id = ?", [id]);
 }
 
 // ---------- Site settings (single row, id = 1) ----------

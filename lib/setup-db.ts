@@ -1,3 +1,4 @@
+import { blogPosts } from "./blog";
 import { dbConfigured, getPool, query } from "./db";
 import { fallbackBranches, fallbackCourses, fallbackSettings } from "./fallback";
 
@@ -22,6 +23,13 @@ const CREATE = [
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
   `CREATE TABLE IF NOT EXISTS site_settings (
      id INT PRIMARY KEY,
+     data JSON NOT NULL,
+     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS blog_posts (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     slug VARCHAR(191) NOT NULL UNIQUE,
+     sort_order INT NOT NULL DEFAULT 100,
      data JSON NOT NULL,
      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
@@ -72,6 +80,17 @@ export async function setupDatabase(): Promise<{ seededCourses: number; seededBr
         JSON.stringify(fallbackBranches[i]),
       ]);
       seededBranches++;
+    }
+  }
+
+  const blogCount = await query<{ c: number }>("SELECT COUNT(*) AS c FROM blog_posts");
+  if ((blogCount[0]?.c ?? 0) === 0) {
+    for (let i = 0; i < blogPosts.length; i++) {
+      await pool.execute("INSERT INTO blog_posts (slug, sort_order, data) VALUES (?, ?, ?)", [
+        blogPosts[i].slug,
+        i + 1,
+        JSON.stringify(blogPosts[i]),
+      ]);
     }
   }
 

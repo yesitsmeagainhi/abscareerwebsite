@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getBranchSlugs(),
     getLocationSlugs(),
   ]);
-  const posts = getBlogPosts();
+  const posts = await getBlogPosts();
   const lastModified = new Date(CONTENT_UPDATED);
 
   const staticRoutes = ["", "/courses", "/branches", "/blog", "/about", "/contact"].map(
