@@ -4,12 +4,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import AreaCoursePage from "@/components/AreaCoursePage";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import EnquiryForm from "@/components/EnquiryForm";
 import {
   JsonLd,
   breadcrumbSchema,
   courseSchema,
   faqSchema,
+  howToSchema,
+  speakableSchema,
 } from "@/components/Schema";
 import {
   getBranches,
@@ -27,7 +30,7 @@ import {
   siblingsForBranch,
   siblingsForCourse,
 } from "@/lib/locations";
-import { CONTENT_UPDATED, formatDate, whatsappLink } from "@/lib/site";
+import { CONTENT_UPDATED, SITE_URL, formatDate, whatsappLink } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -51,19 +54,30 @@ export async function generateMetadata({
     const description = course.seo?.description || course.shortDescription;
     return {
       // Absolute → the page sets the full <title>, so the "| ABS" template
-      // suffix isn't appended (avoids a duplicated brand). og:title/description
-      // are auto-derived; omitting openGraph here lets the default OG image apply.
+      // suffix isn't appended (avoids a duplicated brand). The default OG image
+      // (app/opengraph-image.tsx) applies automatically.
       title: { absolute: title },
       description,
       alternates: { canonical: `/${course.slug}` },
+      openGraph: {
+        type: "article",
+        title,
+        description,
+        url: `/${course.slug}`,
+      },
+      twitter: { card: "summary_large_image", title, description },
     };
   }
   const loc = await getLocationPage(slug);
   if (loc) {
+    const ltitle = `${locationTitle(loc)} | ABS`;
+    const ldesc = locationDescription(loc);
     return {
-      title: { absolute: `${locationTitle(loc)} | ABS` },
-      description: locationDescription(loc),
+      title: { absolute: ltitle },
+      description: ldesc,
       alternates: { canonical: `/${loc.slug}` },
+      openGraph: { type: "article", title: ltitle, description: ldesc, url: `/${loc.slug}` },
+      twitter: { card: "summary_large_image", title: ltitle, description: ldesc },
     };
   }
   return { title: "Page not found" };
@@ -104,6 +118,7 @@ export default async function CoursePage({
   }
 
   const heroUrl = course.heroImage;
+  const kw = course.courseShortName || course.title;
   const updated = formatDate(course.updatedAt || CONTENT_UPDATED);
   const courseTitles = allCourses.map((c) => c.courseShortName || c.title);
   const qf = course.quickFacts;
@@ -114,6 +129,17 @@ export default async function CoursePage({
     { label: "Approved by", value: qf?.approvedBy },
     { label: "Admission 2026", value: qf?.admissionStatus },
   ].filter((f) => f.value);
+
+  const howTo = howToSchema(course);
+  // "On this page" jump links — only sections that actually exist (SXO/AEO).
+  const toc = [
+    course.whatIs && { id: "about", label: `About ${kw}` },
+    course.eligibilityPoints?.length && { id: "eligibility", label: "Eligibility" },
+    (course.feesInfo || course.feesRange) && { id: "fees", label: "Fees" },
+    course.admissionSteps?.length && { id: "admission-process", label: "Admission process" },
+    (course.careerScope || course.jobRoles?.length) && { id: "career", label: "Career & scope" },
+    course.faqs?.length && { id: "faqs", label: "FAQs" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   return (
     <article>
@@ -126,19 +152,22 @@ export default async function CoursePage({
         ])}
       />
       {course.faqs && course.faqs.length > 0 && <JsonLd data={faqSchema(course.faqs)} />}
+      {howTo && <JsonLd data={howTo} />}
+      <JsonLd data={speakableSchema(`${SITE_URL}/${course.slug}`)} />
 
       {/* 1. Header + opening answer */}
       <header className="bg-brand-light">
         <div className="mx-auto max-w-5xl px-4 py-10">
-          <nav className="mb-3 text-sm text-gray-500">
-            <Link href="/courses" className="hover:text-brand">
-              Courses
-            </Link>{" "}
-            / <span className="text-gray-700">{course.courseShortName || course.title}</span>
-          </nav>
-          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">{course.title}</h1>
+          <Breadcrumbs
+            items={[
+              { name: "Home", path: "/" },
+              { name: "Courses", path: "/courses" },
+              { name: kw, path: `/${course.slug}` },
+            ]}
+          />
+          <h1 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">{course.title}</h1>
           {course.openingAnswer && (
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">
+            <p className="speakable-answer mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">
               {course.openingAnswer}
             </p>
           )}
@@ -154,6 +183,22 @@ export default async function CoursePage({
               {settings.reviewerName && updated ? " · " : ""}
               {updated && <>Last updated {updated}</>}
             </p>
+          )}
+          {toc.length > 0 && (
+            <nav aria-label="On this page" className="mt-5">
+              <span className="mr-2 text-sm font-medium text-gray-500">On this page:</span>
+              <span className="inline-flex flex-wrap gap-2">
+                {toc.map((t) => (
+                  <a
+                    key={t.id}
+                    href={`#${t.id}`}
+                    className="rounded-full bg-white/70 px-3 py-1 text-sm font-medium text-brand transition hover:bg-white"
+                  >
+                    {t.label}
+                  </a>
+                ))}
+              </span>
+            </nav>
           )}
           <div className="mt-5 flex flex-wrap gap-3">
             {settings.phone && (
@@ -195,7 +240,7 @@ export default async function CoursePage({
 
           {/* 2. What is X */}
           {course.whatIs && (
-            <section className="mb-8">
+            <section id="about" className="mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-gray-900">
                 What is {course.courseShortName || course.title}?
               </h2>
@@ -263,7 +308,7 @@ export default async function CoursePage({
 
           {/* 4. Eligibility checklist */}
           {course.eligibilityPoints && course.eligibilityPoints.length > 0 && (
-            <section className="mb-8">
+            <section id="eligibility" className="mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-gray-900">Eligibility — can I apply?</h2>
               <ul className="mt-3 space-y-2">
                 {course.eligibilityPoints.map((p, i) => (
@@ -294,7 +339,7 @@ export default async function CoursePage({
 
           {/* 5. Admission steps */}
           {course.admissionSteps && course.admissionSteps.length > 0 && (
-            <section className="mb-8">
+            <section id="admission-process" className="mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-gray-900">Admission process 2026</h2>
               <ol className="mt-3 space-y-3">
                 {course.admissionSteps.map((s, i) => (
@@ -311,7 +356,7 @@ export default async function CoursePage({
 
           {/* 6. Fees & duration */}
           {(course.feesInfo || course.feesRange) && (
-            <section className="mb-8">
+            <section id="fees" className="mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-gray-900">Fees & duration</h2>
               {course.feesRange && (
                 <p className="mt-3 rounded-xl border border-brand/20 bg-brand-light p-4 text-gray-800">
@@ -354,7 +399,7 @@ export default async function CoursePage({
             course.jobRoles?.length ||
             course.workAreas?.length ||
             course.salaryRange) && (
-            <section className="mb-8">
+            <section id="career" className="mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-gray-900">
                 Career & scope after {course.courseShortName || course.title}
               </h2>
@@ -482,7 +527,7 @@ export default async function CoursePage({
 
           {/* 10. FAQ */}
           {course.faqs && course.faqs.length > 0 && (
-            <section className="mb-8">
+            <section id="faqs" className="mb-8 scroll-mt-24">
               <h2 className="text-2xl font-bold text-gray-900">Frequently asked questions</h2>
               <div className="mt-4 divide-y divide-gray-200 rounded-xl border border-gray-200">
                 {course.faqs.map((f, i) => (

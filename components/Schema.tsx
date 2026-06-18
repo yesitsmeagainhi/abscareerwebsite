@@ -79,6 +79,11 @@ export function branchSchema(branch: Branch, orgName: string, phone?: string) {
 }
 
 export function courseSchema(course: Course, providerName: string) {
+  const prerequisites =
+    course.quickFacts?.eligibility ||
+    (course.eligibilityPoints && course.eligibilityPoints.length
+      ? course.eligibilityPoints.join("; ")
+      : undefined);
   return {
     "@context": "https://schema.org",
     "@type": "Course",
@@ -90,15 +95,19 @@ export function courseSchema(course: Course, providerName: string) {
       name: providerName,
       url: SITE_URL,
       sameAs: SITE_URL,
+      areaServed: { "@type": "City", name: "Mumbai" },
     },
     url: `${SITE_URL}/${course.slug}`,
     ...(course.courseShortName
       ? { educationalCredentialAwarded: course.courseShortName }
       : {}),
+    ...(prerequisites ? { coursePrerequisites: prerequisites } : {}),
+    ...(course.subjects && course.subjects.length ? { teaches: course.subjects } : {}),
     // Required-ish for Course rich results: at least one instance with a mode + location.
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "onsite",
+      inLanguage: "en",
       ...(course.quickFacts?.duration ? { courseWorkload: course.quickFacts.duration } : {}),
       location: {
         "@type": "Place",
@@ -110,6 +119,43 @@ export function courseSchema(course: Course, providerName: string) {
           addressCountry: "IN",
         },
       },
+    },
+  };
+}
+
+/**
+ * HowTo schema for the admission process — lets Google show a step-by-step rich
+ * result and helps AI answer engines extract the exact steps. (AEO)
+ */
+export function howToSchema(course: Course) {
+  if (!course.admissionSteps || course.admissionSteps.length === 0) return null;
+  const name = course.courseShortName || course.title;
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to get ${name} admission in Mumbai (2026)`,
+    description: `Step-by-step ${name} admission process in Mumbai for the 2026 batch with ABS Educational Solution.`,
+    step: course.admissionSteps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: `Step ${i + 1}`,
+      text: s,
+    })),
+  };
+}
+
+/**
+ * Speakable spec — marks the concise answer + headings for voice assistants and
+ * answer engines to read aloud. (AEO)
+ */
+export function speakableSchema(url: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    url,
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", ".speakable-answer"],
     },
   };
 }

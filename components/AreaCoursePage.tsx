@@ -8,6 +8,8 @@ import {
   branchSchema,
   breadcrumbSchema,
   faqSchema,
+  howToSchema,
+  speakableSchema,
 } from "@/components/Schema";
 import type { Course, SiteSettings } from "@/lib/types";
 import {
@@ -40,6 +42,7 @@ export default function AreaCoursePage({
   const courseTitles = allCourses.map((c) => c.courseShortName || c.title);
   const url = `${SITE_URL}/${page.slug}`;
   const faqs = locationFaqs(page);
+  const howTo = howToSchema(course);
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -54,6 +57,8 @@ export default function AreaCoursePage({
       <JsonLd data={branchSchema(branch, settings.orgName, settings.phone)} />
       <JsonLd data={breadcrumbSchema(crumbs)} />
       <JsonLd data={faqSchema(faqs)} />
+      {howTo && <JsonLd data={howTo} />}
+      <JsonLd data={speakableSchema(url)} />
 
       {/* Header */}
       <header className="bg-brand-light">
@@ -62,7 +67,7 @@ export default function AreaCoursePage({
           <h1 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
             {kw} Admission in {branch.name}, Mumbai — 2026
           </h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">
+          <p className="speakable-answer mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">
             {locationIntro(page)}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
