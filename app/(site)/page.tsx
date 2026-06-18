@@ -3,8 +3,11 @@ import Link from "next/link";
 
 import CourseCard from "@/components/CourseCard";
 import EnquiryForm from "@/components/EnquiryForm";
-import { JsonLd, organizationSchema } from "@/components/Schema";
+import { JsonLd, organizationSchema, websiteSchema } from "@/components/Schema";
+import { getBlogPosts } from "@/lib/blog";
 import { getBranches, getCourses, getSiteSettings } from "@/lib/content";
+import { courseKeyword, locationSlug } from "@/lib/locations";
+import { formatDate } from "@/lib/site";
 
 export const revalidate = 3600; // ISR — refresh from CMS hourly
 
@@ -41,9 +44,15 @@ export default async function HomePage() {
     getBranches(),
   ]);
   const courseTitles = courses.map((c) => c.courseShortName || c.title);
+  const posts = getBlogPosts().slice(0, 4);
+  // A few high-intent local searches for internal linking from the homepage.
+  const popularSearches = courses
+    .slice(0, 3)
+    .flatMap((c) => branches.map((b) => ({ course: c, branch: b })));
 
   return (
     <>
+      <JsonLd data={websiteSchema(settings)} />
       <JsonLd data={organizationSchema(settings, branches)} />
 
       {/* Hero */}
@@ -152,6 +161,63 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* Popular local searches — internal links into the money pages */}
+      <section className="bg-gray-50">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-gray-900">Popular admission searches</h2>
+            <p className="mt-2 text-gray-600">
+              Get local, area-specific admission guidance across Mumbai.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {popularSearches.map(({ course, branch }) => (
+              <Link
+                key={`${course.slug}-${branch.slug}`}
+                href={`/${locationSlug(course, branch)}`}
+                className="rounded-full border border-gray-300 bg-white px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:border-brand hover:text-brand"
+              >
+                {courseKeyword(course)} in {branch.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Latest from the blog */}
+      {posts.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 py-16">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">Admission guides & advice</h2>
+              <p className="mt-2 text-gray-600">
+                Honest guides on fees, eligibility and choosing the right course.
+              </p>
+            </div>
+            <Link href="/blog" className="hidden text-sm font-semibold text-brand underline sm:block">
+              View all →
+            </Link>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {posts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg"
+              >
+                <h3 className="font-semibold text-gray-900">{post.title}</h3>
+                <p className="mt-2 flex-1 text-sm text-gray-600">
+                  {post.excerpt || post.description}
+                </p>
+                <time className="mt-3 text-xs text-gray-500" dateTime={post.datePublished}>
+                  {formatDate(post.datePublished)}
+                </time>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Closing CTA with full form */}
       <section className="mx-auto max-w-3xl px-4 py-16">

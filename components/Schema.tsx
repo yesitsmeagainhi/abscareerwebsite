@@ -1,4 +1,4 @@
-import type { Branch, Course, SiteSettings } from "@/lib/types";
+import type { Branch, BlogPost, Course, SiteSettings } from "@/lib/types";
 import { SITE_URL } from "@/lib/site";
 
 // Renders a JSON-LD <script>. Next.js allows this in the App Router; search
@@ -114,6 +114,46 @@ export function courseSchema(course: Course, providerName: string) {
   };
 }
 
+/**
+ * Course schema for a course×location money page. Same Course type, but the
+ * CourseInstance is located at the specific branch and the canonical url points
+ * to the money page — so each local page carries its own structured data.
+ */
+export function areaCourseSchema(
+  course: Course,
+  branch: Branch,
+  providerName: string,
+  url: string,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: `${course.courseShortName || course.title} Admission in ${branch.name}, Mumbai`,
+    description: course.shortDescription,
+    inLanguage: "en",
+    provider: { "@type": "EducationalOrganization", name: providerName, url: SITE_URL },
+    url,
+    ...(course.courseShortName ? { educationalCredentialAwarded: course.courseShortName } : {}),
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "onsite",
+      ...(course.quickFacts?.duration ? { courseWorkload: course.quickFacts.duration } : {}),
+      location: {
+        "@type": "Place",
+        name: `${branch.name}, Mumbai`,
+        address: {
+          "@type": "PostalAddress",
+          ...(branch.address ? { streetAddress: branch.address } : {}),
+          addressLocality: `${branch.name}, Mumbai`,
+          addressRegion: "Maharashtra",
+          ...(branch.postalCode ? { postalCode: branch.postalCode } : {}),
+          addressCountry: "IN",
+        },
+      },
+    },
+  };
+}
+
 export function faqSchema(faqs: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",
@@ -123,6 +163,51 @@ export function faqSchema(faqs: { question: string; answer: string }[]) {
       name: f.question,
       acceptedAnswer: { "@type": "Answer", text: f.answer },
     })),
+  };
+}
+
+/** Site-wide WebSite node — ties pages to one publisher entity for Google. */
+export function websiteSchema(settings: SiteSettings) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: settings.orgName,
+    url: SITE_URL,
+    inLanguage: "en-IN",
+    publisher: {
+      "@type": "EducationalOrganization",
+      name: settings.orgName,
+      url: SITE_URL,
+      ...(settings.logo ? { logo: settings.logo } : {}),
+    },
+  };
+}
+
+/** BlogPosting / Article schema for a blog post (E-E-A-T: author + dates). */
+export function articleSchema(post: BlogPost, settings: SiteSettings) {
+  const url = `${SITE_URL}/blog/${post.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    inLanguage: "en-IN",
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    datePublished: post.datePublished,
+    dateModified: post.dateModified || post.datePublished,
+    author: {
+      "@type": "Organization",
+      name: post.author || settings.reviewerName || settings.orgName,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "EducationalOrganization",
+      name: settings.orgName,
+      url: SITE_URL,
+      ...(settings.logo ? { logo: { "@type": "ImageObject", url: settings.logo } } : {}),
+    },
+    ...(post.heroImage ? { image: post.heroImage } : {}),
   };
 }
 

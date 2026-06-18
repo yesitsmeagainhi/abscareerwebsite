@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
 import CourseCard from "@/components/CourseCard";
 import { JsonLd, breadcrumbSchema } from "@/components/Schema";
 import { getCourses } from "@/lib/content";
@@ -24,7 +25,13 @@ export default async function CoursesPage() {
           { name: "Courses", path: "/courses" },
         ])}
       />
-      <h1 className="text-4xl font-bold text-gray-900">Courses</h1>
+      <Breadcrumbs
+        items={[
+          { name: "Home", path: "/" },
+          { name: "Courses", path: "/courses" },
+        ]}
+      />
+      <h1 className="mt-3 text-4xl font-bold text-gray-900">Courses</h1>
       <p className="mt-3 max-w-2xl text-gray-600">
         We guide students into accredited Nursing and Paramedical programmes across Mumbai and
         Maharashtra. Pick a course to see eligibility, duration, scope and admission support.

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import AreaCoursePage from "@/components/AreaCoursePage";
 import EnquiryForm from "@/components/EnquiryForm";
 import {
   JsonLd,
@@ -17,13 +18,25 @@ import {
   getCourses,
   getSiteSettings,
 } from "@/lib/content";
+import {
+  getLocationPage,
+  getLocationSlugs,
+  locationDescription,
+  locationSlug,
+  locationTitle,
+  siblingsForBranch,
+  siblingsForCourse,
+} from "@/lib/locations";
 import { CONTENT_UPDATED, formatDate, whatsappLink } from "@/lib/site";
 
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const slugs = await getCourseSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const [courseSlugs, locationSlugs] = await Promise.all([
+    getCourseSlugs(),
+    getLocationSlugs(),
+  ]);
+  return [...courseSlugs, ...locationSlugs].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -33,17 +46,27 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
-  if (!course) return { title: "Page not found" };
-  const title = course.seo?.title || `${course.title} | ABS`;
-  const description = course.seo?.description || course.shortDescription;
-  return {
-    // Absolute → the page sets the full <title>, so the "| ABS" template
-    // suffix isn't appended (avoids a duplicated brand). og:title/description
-    // are auto-derived; omitting openGraph here lets the default OG image apply.
-    title: { absolute: title },
-    description,
-    alternates: { canonical: `/${course.slug}` },
-  };
+  if (course) {
+    const title = course.seo?.title || `${course.title} | ABS`;
+    const description = course.seo?.description || course.shortDescription;
+    return {
+      // Absolute → the page sets the full <title>, so the "| ABS" template
+      // suffix isn't appended (avoids a duplicated brand). og:title/description
+      // are auto-derived; omitting openGraph here lets the default OG image apply.
+      title: { absolute: title },
+      description,
+      alternates: { canonical: `/${course.slug}` },
+    };
+  }
+  const loc = await getLocationPage(slug);
+  if (loc) {
+    return {
+      title: { absolute: `${locationTitle(loc)} | ABS` },
+      description: locationDescription(loc),
+      alternates: { canonical: `/${loc.slug}` },
+    };
+  }
+  return { title: "Page not found" };
 }
 
 export default async function CoursePage({
@@ -59,7 +82,26 @@ export default async function CoursePage({
     getBranches(),
   ]);
 
-  if (!course) notFound();
+  // Not a course? It may be a course×location money page (e.g. /d-pharma-admission-thane).
+  if (!course) {
+    const loc = await getLocationPage(slug);
+    if (loc) {
+      const [siblingAreas, otherCourses] = await Promise.all([
+        siblingsForCourse(loc),
+        siblingsForBranch(loc),
+      ]);
+      return (
+        <AreaCoursePage
+          page={loc}
+          settings={settings}
+          allCourses={allCourses}
+          siblingAreas={siblingAreas}
+          otherCourses={otherCourses}
+        />
+      );
+    }
+    notFound();
+  }
 
   const heroUrl = course.heroImage;
   const updated = formatDate(course.updatedAt || CONTENT_UPDATED);
@@ -404,20 +446,35 @@ export default async function CoursePage({
             </section>
           )}
 
-          {/* 9. Branch info */}
+          {/* 9. Course × location — area admission pages (local SEO + branch links) */}
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Visit your nearest branch</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {course.courseShortName || course.title} admission near you
+            </h2>
             <p className="mt-2 text-gray-700">
-              We guide students for {course.courseShortName || course.title} at all 6 ABS branches:
+              We guide students for {course.courseShortName || course.title} across Mumbai. Pick your
+              area for local guidance:
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {branches.map((b) => (
                 <Link
                   key={b.slug}
-                  href={`/branches/${b.slug}`}
+                  href={`/${locationSlug(course, b)}`}
                   className="rounded-full border border-brand px-4 py-1.5 text-sm font-medium text-brand transition hover:bg-brand-light"
                 >
-                  {b.name}
+                  {course.courseShortName || course.title} in {b.name}
+                </Link>
+              ))}
+            </div>
+            <p className="mt-4 text-gray-700">Or visit any of our 6 branches:</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {branches.map((b) => (
+                <Link
+                  key={b.slug}
+                  href={`/branches/${b.slug}`}
+                  className="rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:border-brand hover:text-brand"
+                >
+                  📍 {b.name}
                 </Link>
               ))}
             </div>

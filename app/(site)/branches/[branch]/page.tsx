@@ -10,6 +10,7 @@ import {
   getCourses,
   getSiteSettings,
 } from "@/lib/content";
+import { courseKeyword, locationSlug } from "@/lib/locations";
 import { CONTENT_UPDATED, formatDate, whatsappLink } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -205,15 +206,32 @@ export default async function BranchPage({
           )}
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900">Courses we guide for here</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Courses we guide for at {branch.name}
+            </h2>
+            <p className="mt-2 text-gray-700">
+              Get local, area-specific admission guidance for {branch.name} and nearby areas:
+            </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {courses.map((c) => (
                 <Link
                   key={c.slug}
-                  href={`/${c.slug}`}
+                  href={`/${locationSlug(c, branch)}`}
                   className="rounded-full border border-brand px-4 py-1.5 text-sm font-medium text-brand transition hover:bg-brand-light"
                 >
-                  {c.courseShortName || c.title}
+                  {courseKeyword(c)} in {branch.name}
+                </Link>
+              ))}
+            </div>
+            <p className="mt-4 text-gray-700">Read the full course guides:</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {courses.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/${c.slug}`}
+                  className="rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:border-brand hover:text-brand"
+                >
+                  {courseKeyword(c)}
                 </Link>
               ))}
             </div>

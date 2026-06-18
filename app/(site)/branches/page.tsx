@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { JsonLd, breadcrumbSchema, organizationSchema } from "@/components/Schema";
 import { getBranches, getCourses, getSiteSettings } from "@/lib/content";
 
@@ -29,8 +30,14 @@ export default async function BranchesPage() {
           { name: "Branches", path: "/branches" },
         ])}
       />
+      <Breadcrumbs
+        items={[
+          { name: "Home", path: "/" },
+          { name: "Branches", path: "/branches" },
+        ]}
+      />
 
-      <h1 className="text-4xl font-bold text-gray-900">Our branches across Mumbai</h1>
+      <h1 className="mt-3 text-4xl font-bold text-gray-900">Our branches across Mumbai</h1>
       <p className="mt-3 max-w-3xl text-gray-600">
         ABS Educational Solution has {branches.length} branches across Mumbai — in Thane, Kurla,
         Malad, Bhayandar, Nalasopara and Andheri. Wherever you stay, there is an ABS office near

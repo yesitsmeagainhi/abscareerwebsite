@@ -102,6 +102,33 @@ export type SiteSettings = {
   testimonials?: Testimonial[];
 };
 
+/**
+ * A blog article. The body is stored as ready-to-render HTML so the full
+ * content ships in the server-rendered page (best for Google + AI crawlers) —
+ * no client-side rendering of the article text.
+ */
+export type BlogPost = {
+  slug: string;
+  title: string;
+  description: string;
+  /** ISO date string, e.g. "2026-06-10". */
+  datePublished: string;
+  dateModified?: string;
+  author?: string;
+  /** Short category/keyword tags shown on the post. */
+  tags?: string[];
+  heroImage?: string;
+  /** A one-paragraph standfirst shown under the title. */
+  excerpt?: string;
+  /** Server-rendered article HTML (headings, paragraphs, lists, tables, links). */
+  bodyHtml: string;
+  faqs?: FAQ[];
+  /** Slugs of related course pages to surface as internal links. */
+  relatedCourses?: string[];
+  /** Slugs of related blog posts. */
+  relatedPosts?: string[];
+};
+
 export type Lead = {
   id?: number;
   createdAt?: string;
