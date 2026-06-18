@@ -10,7 +10,7 @@ import {
   getCourses,
   getSiteSettings,
 } from "@/lib/content";
-import { whatsappLink } from "@/lib/site";
+import { CONTENT_UPDATED, formatDate, whatsappLink } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -53,6 +53,7 @@ export default async function BranchPage({
 
   const phone = branch.phone || settings.phone;
   const courseTitles = courses.map((c) => c.courseShortName || c.title);
+  const updated = formatDate(branch.updatedAt || CONTENT_UPDATED);
 
   return (
     <article>
@@ -81,6 +82,18 @@ export default async function BranchPage({
             {branch.intro ||
               `Free admission counselling for D.Pharm, B.Pharm, Nursing and Paramedical courses at our ${branch.name} branch.`}
           </p>
+          {(settings.reviewerName || updated) && (
+            <p className="mt-3 text-sm text-gray-500">
+              {settings.reviewerName && (
+                <>
+                  Reviewed by{" "}
+                  <span className="font-medium text-gray-700">{settings.reviewerName}</span>
+                </>
+              )}
+              {settings.reviewerName && updated ? " · " : ""}
+              {updated && <>Last updated {updated}</>}
+            </p>
+          )}
           <div className="mt-5 flex flex-wrap gap-3">
             {phone && (
               <a

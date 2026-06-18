@@ -18,15 +18,23 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
  * is one org with multiple physical branches across Mumbai.
  */
 export function organizationSchema(settings: SiteSettings, branches: Branch[] = []) {
+  const sameAs = [
+    settings.socials?.facebook,
+    settings.socials?.instagram,
+    settings.socials?.youtube,
+  ].filter(Boolean) as string[];
   return {
     "@context": "https://schema.org",
     "@type": ["EducationalOrganization", "LocalBusiness"],
     name: settings.orgName,
     description: settings.description,
     url: SITE_URL,
+    areaServed: { "@type": "City", name: "Mumbai" },
+    ...(settings.logo ? { logo: settings.logo, image: settings.logo } : {}),
     ...(settings.foundingYear ? { foundingDate: settings.foundingYear } : {}),
     ...(settings.email ? { email: settings.email } : {}),
     ...(settings.phone ? { telephone: settings.phone } : {}),
+    ...(sameAs.length ? { sameAs } : {}),
     ...(branches.length
       ? {
           department: branches.map((b) => ({
@@ -63,6 +71,8 @@ export function branchSchema(branch: Branch, orgName: string, phone?: string) {
       addressCountry: "IN",
     },
     url: `${SITE_URL}/branches/${branch.slug}`,
+    areaServed: { "@type": "City", name: "Mumbai" },
+    priceRange: "₹₹",
     ...(branch.mapsUrl ? { hasMap: branch.mapsUrl } : {}),
     parentOrganization: { "@type": "EducationalOrganization", name: orgName, url: SITE_URL },
   };
@@ -74,12 +84,33 @@ export function courseSchema(course: Course, providerName: string) {
     "@type": "Course",
     name: course.title,
     description: course.shortDescription,
+    inLanguage: "en",
     provider: {
       "@type": "EducationalOrganization",
       name: providerName,
+      url: SITE_URL,
       sameAs: SITE_URL,
     },
     url: `${SITE_URL}/${course.slug}`,
+    ...(course.courseShortName
+      ? { educationalCredentialAwarded: course.courseShortName }
+      : {}),
+    // Required-ish for Course rich results: at least one instance with a mode + location.
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "onsite",
+      ...(course.quickFacts?.duration ? { courseWorkload: course.quickFacts.duration } : {}),
+      location: {
+        "@type": "Place",
+        name: "Mumbai, Maharashtra",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Mumbai",
+          addressRegion: "Maharashtra",
+          addressCountry: "IN",
+        },
+      },
+    },
   };
 }
 

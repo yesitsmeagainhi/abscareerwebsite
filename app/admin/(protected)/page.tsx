@@ -3,6 +3,7 @@ import Link from "next/link";
 import { dbConfigured } from "@/lib/db";
 import { getBranches, getCourses } from "@/lib/content";
 import InitDbButton from "@/components/admin/InitDbButton";
+import SyncContentButton from "@/components/admin/SyncContentButton";
 
 export default async function AdminDashboard() {
   const [courses, branches] = await Promise.all([getCourses(), getBranches()]);
@@ -55,6 +56,20 @@ export default async function AdminDashboard() {
           </p>
         )}
       </div>
+
+      {/* Publish updated seed content (overwrites existing course/branch rows) */}
+      {dbConfigured && (
+        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-5">
+          <h2 className="text-sm font-semibold text-gray-900">Publish latest content</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Pushes the newest course &amp; branch content to the live site, overwriting the current
+            pages in the database. Use this after the course content has been updated in code.
+          </p>
+          <div className="mt-3">
+            <SyncContentButton />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

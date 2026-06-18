@@ -6,7 +6,7 @@ import { fallbackBranches, fallbackCourses, fallbackSettings } from "./fallback"
 // any error or empty table) falls back to built-in seed content so the site
 // always renders. Function names match the old Sanity layer so pages are unchanged.
 
-type Row = { slug?: string; data: unknown };
+type Row = { slug?: string; data: unknown; updated_at?: unknown };
 
 // mysql2 usually returns JSON columns already parsed; tolerate string too.
 function parseData<T>(data: unknown): T {
@@ -14,11 +14,18 @@ function parseData<T>(data: unknown): T {
   return data as T;
 }
 
+// Turn a DB TIMESTAMP (Date | string) into an ISO string for the `updatedAt` field.
+function toIso(v: unknown): string | undefined {
+  if (!v) return undefined;
+  const d = v instanceof Date ? v : new Date(v as string);
+  return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+}
+
 function rowToCourse(r: Row): Course {
-  return { ...(parseData<Course>(r.data)), slug: r.slug! };
+  return { ...(parseData<Course>(r.data)), slug: r.slug!, updatedAt: toIso(r.updated_at) };
 }
 function rowToBranch(r: Row): Branch {
-  return { ...(parseData<Branch>(r.data)), slug: r.slug! };
+  return { ...(parseData<Branch>(r.data)), slug: r.slug!, updatedAt: toIso(r.updated_at) };
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -48,9 +55,10 @@ export async function getCourses(): Promise<Course[]> {
 export async function getCourseBySlug(slug: string): Promise<Course | null> {
   if (dbConfigured) {
     try {
-      const rows = await query<Row>("SELECT slug, data FROM courses WHERE slug = ? LIMIT 1", [
-        slug,
-      ]);
+      const rows = await query<Row>(
+        "SELECT slug, data, updated_at FROM courses WHERE slug = ? LIMIT 1",
+        [slug],
+      );
       if (rows.length) return rowToCourse(rows[0]);
     } catch {
       // fall through to seed
@@ -86,9 +94,10 @@ export async function getBranches(): Promise<Branch[]> {
 export async function getBranchBySlug(slug: string): Promise<Branch | null> {
   if (dbConfigured) {
     try {
-      const rows = await query<Row>("SELECT slug, data FROM branches WHERE slug = ? LIMIT 1", [
-        slug,
-      ]);
+      const rows = await query<Row>(
+        "SELECT slug, data, updated_at FROM branches WHERE slug = ? LIMIT 1",
+        [slug],
+      );
       if (rows.length) return rowToBranch(rows[0]);
     } catch {
       // fall through

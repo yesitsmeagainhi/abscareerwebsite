@@ -22,6 +22,11 @@ export const fallbackSettings: SiteSettings = {
   email: "info@abscareer.com",
   address: "6 branches across Mumbai — Thane, Kurla, Malad, Bhayandar, Nalasopara, Andheri",
   socials: {},
+  // E-E-A-T byline. Replace with a real named counsellor for a stronger trust signal.
+  reviewerName: "ABS Admissions Counselling Team",
+  reviewerCredential: "Guiding Mumbai students into pharmacy, nursing & paramedical colleges since 2009",
+  // Add real student testimonials here (real names only — never fabricate reviews).
+  testimonials: [],
 };
 
 // Each branch has unique local content (real Mumbai geography) so the pages are
@@ -289,11 +294,11 @@ export const fallbackCourses: Course[] = [
       "Domicile certificate (if asked)",
     ],
     shortDescription:
-      "Diploma in Pharmacy (D.Pharm) — a 2-year course after 12th. Admission for 2026 is open. ABS helps you get in across 6 Mumbai branches.",
+      "D Pharma admission in Mumbai 2026 — Diploma in Pharmacy is a 2-year course after 12th, no NEET. ABS helps you get into approved Mumbai colleges across 6 branches.",
     openingAnswer:
-      "D.Pharm (Diploma in Pharmacy) is a 2-year course you can do after 12th. Admission for 2026 is open now. ABS Educational Solution helps you get admission into approved colleges across our 6 Mumbai branches — with free counselling.",
+      "D Pharma admission in Mumbai for 2026 is open now. D.Pharm (Diploma in Pharmacy) is a 2-year course you can do right after 12th — no NEET needed. ABS Educational Solution helps you get D Pharma admission in approved PCI / MSBTE colleges across Mumbai, with free counselling and honest fee guidance at all 6 branches.",
     whatIs:
-      "D.Pharm stands for Diploma in Pharmacy. It is a 2-year course you can join right after 12th. After D.Pharm you can become a registered pharmacist and open your own medical store, or work in hospitals and pharma companies. It is one of the most popular and safe career choices after 12th science.",
+      "D.Pharm stands for Diploma in Pharmacy. It is a 2-year course you can join right after 12th. After D.Pharm you can become a registered pharmacist and open your own medical store, or work in hospitals and pharma companies. It is one of the most popular and safe career choices after 12th science. In Mumbai, D Pharma is one of the most in-demand courses after 12th — ABS guides you to the right PCI / MSBTE-approved college near you.",
     quickFacts: {
       duration: "2 years",
       eligibility: "12th with PCB / PCM",
@@ -314,7 +319,12 @@ export const fallbackCourses: Course[] = [
       "Start your D.Pharm classes for the 2026 batch.",
     ],
     feesInfo:
-      "D.Pharm fees in Mumbai vary by college. We share the honest, current fee range during counselling — no hidden charges. (Confirm exact fees with our counsellor.)",
+      "D Pharma fees in Mumbai vary by college and management quota. We share the honest, current 2026 fee range during free counselling — no hidden charges. (Confirm exact fees with our counsellor.)",
+    feesRange: "₹15,000 – ₹1,00,000 per year (approx.)",
+    officialBodies: [
+      { name: "Pharmacy Council of India (PCI)", url: "https://www.pci.nic.in/" },
+      { name: "MSBTE", url: "https://msbte.org.in/" },
+    ],
     careerScope:
       "After D.Pharm you can register as a pharmacist, open your own medical store, work in hospitals, or join pharma companies. You can also study further with B.Pharm. Salaries start around ₹15,000–₹25,000/month and grow with experience.",
     faqs: [
@@ -329,7 +339,17 @@ export const fallbackCourses: Course[] = [
       {
         question: "What is the D.Pharm course fees in Mumbai?",
         answer:
-          "Fees depend on the college. We share the real, current fee range during free counselling so you can plan properly.",
+          "Fees depend on the college and quota. We share the real, current 2026 fee range during free counselling so you can plan properly.",
+      },
+      {
+        question: "Which are the best D Pharma colleges in Mumbai?",
+        answer:
+          "There are many PCI and MSBTE-approved D Pharma colleges across Mumbai — in the western, central and harbour suburbs. During free counselling we shortlist the best approved colleges near your branch, based on your 12th marks and budget.",
+      },
+      {
+        question: "How can I get D Pharma admission in Mumbai for 2026?",
+        answer:
+          "Call or WhatsApp ABS with your 12th marks and preferred area. We guide you on approved Mumbai colleges, help you fill the form and arrange documents, and confirm your seat for the 2026 batch — all free of cost.",
       },
       {
         question: "How do I get admission through ABS?",
@@ -406,9 +426,9 @@ export const fallbackCourses: Course[] = [
       "Caste / domicile certificate (if applicable)",
     ],
     shortDescription:
-      "Bachelor of Pharmacy (B.Pharm) — a 4-year degree after 12th. Admission 2026 open. ABS guides you across 6 Mumbai branches.",
+      "B Pharma admission in Mumbai 2026 — Bachelor of Pharmacy is a 4-year degree after 12th. ABS guides you into approved Mumbai colleges across 6 branches.",
     openingAnswer:
-      "B.Pharm (Bachelor of Pharmacy) is a 4-year degree you can do after 12th Science. Admission for 2026 is open. ABS Educational Solution helps you get admission into approved pharmacy colleges across Mumbai — with free counselling.",
+      "B Pharma admission in Mumbai for 2026 is open. B.Pharm (Bachelor of Pharmacy) is a 4-year degree you can do after 12th Science. ABS Educational Solution helps you get B Pharma admission into approved pharmacy colleges across Mumbai — with free counselling.",
     whatIs:
       "B.Pharm stands for Bachelor of Pharmacy. It is a 4-year degree course after 12th. It gives you deeper knowledge than D.Pharm and better job and salary growth. After B.Pharm you can work in pharma companies, hospitals, or research, and even study M.Pharm later.",
     quickFacts: {
@@ -431,6 +451,11 @@ export const fallbackCourses: Course[] = [
     ],
     feesInfo:
       "B.Pharm fees are higher than D.Pharm and vary by college. We give you an honest fee range during counselling. (Confirm exact fees with our counsellor.)",
+    feesRange: "₹40,000 – ₹1,50,000 per year (approx.)",
+    officialBodies: [
+      { name: "Pharmacy Council of India (PCI)", url: "https://www.pci.nic.in/" },
+      { name: "AICTE", url: "https://www.aicte-india.org/" },
+    ],
     careerScope:
       "After B.Pharm you can work in pharmaceutical companies, hospitals, drug control, marketing, or research. You can also do M.Pharm or MBA. It offers strong long-term salary growth.",
     faqs: [
@@ -510,9 +535,9 @@ export const fallbackCourses: Course[] = [
       "Caste / domicile certificate (if applicable)",
     ],
     shortDescription:
-      "General Nursing & Midwifery (GNM) — a 3-year nursing course after 12th. Admission 2026 open. ABS guides you across Mumbai.",
+      "GNM nursing admission in Mumbai 2026 — a 3-year nursing course after 12th. ABS guides you into recognised Mumbai colleges across 6 branches.",
     openingAnswer:
-      "GNM (General Nursing and Midwifery) is a 3-year nursing course you can do after 12th. Admission for 2026 is open. ABS helps you get admission into recognised nursing colleges across Mumbai — with free counselling.",
+      "GNM nursing admission in Mumbai for 2026 is open. GNM (General Nursing and Midwifery) is a 3-year nursing course you can do after 12th. ABS helps you get admission into recognised nursing colleges across Mumbai — with free counselling.",
     whatIs:
       "GNM stands for General Nursing and Midwifery. It is a 3-year course (plus 6 months internship). It trains you to care for patients in hospitals. After GNM you become a nurse and can work in India or abroad. Students from any stream can apply.",
     quickFacts: {
@@ -535,6 +560,10 @@ export const fallbackCourses: Course[] = [
     ],
     feesInfo:
       "GNM fees vary by college. We share the honest fee range in counselling so there are no surprises. (Confirm exact fees with our counsellor.)",
+    feesRange: "₹25,000 – ₹1,00,000 per year (approx.)",
+    officialBodies: [
+      { name: "Indian Nursing Council (INC)", url: "https://www.indiannursingcouncil.gov.in/" },
+    ],
     careerScope:
       "After GNM you can work as a staff nurse, midwife, or community health nurse in hospitals and clinics. You can also upgrade to B.Sc Nursing later. Demand for nurses is high in India and abroad.",
     faqs: [
@@ -615,9 +644,9 @@ export const fallbackCourses: Course[] = [
       "Caste / domicile certificate (if applicable)",
     ],
     shortDescription:
-      "B.Sc Nursing — a 4-year nursing degree after 12th Science. Admission 2026 open. ABS guides your admission across Mumbai.",
+      "B.Sc Nursing admission in Mumbai 2026 — a 4-year nursing degree after 12th Science. ABS guides you into recognised Mumbai colleges across 6 branches.",
     openingAnswer:
-      "B.Sc Nursing is a 4-year nursing degree you can do after 12th with Science. Admission for 2026 is open. ABS helps you get admission into recognised nursing colleges across Mumbai with free counselling.",
+      "B.Sc Nursing admission in Mumbai for 2026 is open. B.Sc Nursing is a 4-year nursing degree you can do after 12th with Science. ABS helps you get admission into recognised nursing colleges across Mumbai with free counselling.",
     whatIs:
       "B.Sc Nursing is a full nursing degree. It takes 4 years after 12th Science. It opens the best nursing careers in India and abroad, with higher posts and salary than a diploma. It is the top choice if you want a long-term nursing career.",
     quickFacts: {
@@ -640,6 +669,10 @@ export const fallbackCourses: Course[] = [
     ],
     feesInfo:
       "B.Sc Nursing fees vary by college. We give you an honest fee range during counselling. (Confirm exact fees with our counsellor.)",
+    feesRange: "₹40,000 – ₹1,50,000 per year (approx.)",
+    officialBodies: [
+      { name: "Indian Nursing Council (INC)", url: "https://www.indiannursingcouncil.gov.in/" },
+    ],
     careerScope:
       "After B.Sc Nursing you can work as a staff nurse, ICU/critical care nurse, or nursing supervisor — in India, the Gulf, UK and Australia. You can also do M.Sc Nursing for teaching and senior roles.",
     faqs: [
@@ -709,9 +742,9 @@ export const fallbackCourses: Course[] = [
       "Caste / domicile certificate (if applicable)",
     ],
     shortDescription:
-      "Auxiliary Nurse Midwifery (ANM) — a 2-year nursing course after 12th. Admission 2026 open. A fast start to a nursing career.",
+      "ANM nursing admission in Mumbai 2026 — a 2-year nursing course after 12th. ABS guides you into recognised Mumbai colleges. A fast start to a nursing career.",
     openingAnswer:
-      "ANM (Auxiliary Nurse Midwifery) is a 2-year nursing course after 12th. Admission for 2026 is open. ABS helps you join recognised ANM colleges across Mumbai — with free counselling.",
+      "ANM nursing admission in Mumbai for 2026 is open. ANM (Auxiliary Nurse Midwifery) is a 2-year nursing course after 12th. ABS helps you join recognised ANM colleges across Mumbai — with free counselling.",
     whatIs:
       "ANM stands for Auxiliary Nurse Midwifery. It is a short 2-year nursing course. It is the fastest way to start working as a nurse, especially in community health and rural care. You can upgrade to GNM later.",
     quickFacts: {
@@ -734,6 +767,10 @@ export const fallbackCourses: Course[] = [
     ],
     feesInfo:
       "ANM fees are usually lower than GNM and vary by college. We share the honest range in counselling. (Confirm exact fees with our counsellor.)",
+    feesRange: "₹20,000 – ₹80,000 per year (approx.)",
+    officialBodies: [
+      { name: "Indian Nursing Council (INC)", url: "https://www.indiannursingcouncil.gov.in/" },
+    ],
     careerScope:
       "After ANM you can work as an auxiliary nurse or community health worker in hospitals, clinics and health centres. You can later upgrade to GNM for more growth.",
     faqs: [
@@ -805,9 +842,9 @@ export const fallbackCourses: Course[] = [
       "Caste / domicile certificate (if applicable)",
     ],
     shortDescription:
-      "Diploma in Medical Lab Technology (DMLT) — train for in-demand diagnostic lab jobs. Admission 2026 open across Mumbai.",
+      "DMLT admission in Mumbai 2026 — Diploma in Medical Lab Technology for in-demand diagnostic lab jobs. ABS guides you into recognised Mumbai institutes.",
     openingAnswer:
-      "DMLT (Diploma in Medical Laboratory Technology) is a paramedical course you can do after 12th. Admission for 2026 is open. ABS helps you join recognised DMLT institutes across Mumbai — with free counselling.",
+      "DMLT admission in Mumbai for 2026 is open. DMLT (Diploma in Medical Laboratory Technology) is a 2-year paramedical course you can do after 12th. ABS helps you join recognised DMLT institutes across Mumbai — with free counselling.",
     whatIs:
       "DMLT stands for Diploma in Medical Laboratory Technology. It trains you to do and read medical lab tests — like blood and pathology tests. After DMLT you work as a lab technician, one of the fastest-growing healthcare jobs.",
     quickFacts: {
@@ -830,6 +867,7 @@ export const fallbackCourses: Course[] = [
     ],
     feesInfo:
       "DMLT fees vary by institute. We give you an honest fee range during counselling. (Confirm exact fees with our counsellor.)",
+    feesRange: "₹20,000 – ₹70,000 per year (approx.)",
     careerScope:
       "After DMLT you can work as a lab technician, pathology assistant, or phlebotomist in hospitals, diagnostic labs and blood banks. Demand is steady and growing across the country.",
     faqs: [

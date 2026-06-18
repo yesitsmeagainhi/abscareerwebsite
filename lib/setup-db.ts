@@ -82,3 +82,43 @@ export async function setupDatabase(): Promise<{ seededCourses: number; seededBr
 
   return { seededCourses, seededBranches };
 }
+
+/**
+ * Force-publish the built-in seed content (lib/fallback.ts) into the database,
+ * OVERWRITING the data + sort_order of any course/branch with a matching slug.
+ * Unlike setupDatabase(), this updates existing rows — use it to push edited
+ * seed content live on a database that was already seeded.
+ *
+ * Note: this overwrites admin-panel edits for matching slugs and does NOT delete
+ * rows whose slug is no longer in the seed (those are left untouched).
+ */
+export async function syncContent(): Promise<{ courses: number; branches: number }> {
+  if (!dbConfigured) {
+    throw new Error("Database not configured — set DB_HOST / DB_USER / DB_PASSWORD / DB_NAME.");
+  }
+  const pool = getPool();
+  for (const sql of CREATE) await pool.query(sql);
+
+  for (let i = 0; i < fallbackCourses.length; i++) {
+    await pool.execute(
+      `INSERT INTO courses (slug, sort_order, data) VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE sort_order = VALUES(sort_order), data = VALUES(data), updated_at = NOW()`,
+      [fallbackCourses[i].slug, i + 1, JSON.stringify(fallbackCourses[i])],
+    );
+  }
+
+  for (let i = 0; i < fallbackBranches.length; i++) {
+    await pool.execute(
+      `INSERT INTO branches (slug, sort_order, data) VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE sort_order = VALUES(sort_order), data = VALUES(data), updated_at = NOW()`,
+      [fallbackBranches[i].slug, i + 1, JSON.stringify(fallbackBranches[i])],
+    );
+  }
+
+  await pool.execute(
+    "INSERT INTO site_settings (id, data) VALUES (1, ?) ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = NOW()",
+    [JSON.stringify(fallbackSettings)],
+  );
+
+  return { courses: fallbackCourses.length, branches: fallbackBranches.length };
+}

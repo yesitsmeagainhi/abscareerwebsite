@@ -17,7 +17,7 @@ import {
   getCourses,
   getSiteSettings,
 } from "@/lib/content";
-import { whatsappLink } from "@/lib/site";
+import { CONTENT_UPDATED, formatDate, whatsappLink } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -62,6 +62,7 @@ export default async function CoursePage({
   if (!course) notFound();
 
   const heroUrl = course.heroImage;
+  const updated = formatDate(course.updatedAt || CONTENT_UPDATED);
   const courseTitles = allCourses.map((c) => c.courseShortName || c.title);
   const qf = course.quickFacts;
   const facts = [
@@ -97,6 +98,19 @@ export default async function CoursePage({
           {course.openingAnswer && (
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">
               {course.openingAnswer}
+            </p>
+          )}
+          {(settings.reviewerName || updated) && (
+            <p className="mt-3 text-sm text-gray-500">
+              {settings.reviewerName && (
+                <>
+                  Reviewed by{" "}
+                  <span className="font-medium text-gray-700">{settings.reviewerName}</span>
+                  {settings.reviewerCredential ? ` — ${settings.reviewerCredential}` : ""}
+                </>
+              )}
+              {settings.reviewerName && updated ? " · " : ""}
+              {updated && <>Last updated {updated}</>}
             </p>
           )}
           <div className="mt-5 flex flex-wrap gap-3">
@@ -254,10 +268,42 @@ export default async function CoursePage({
           )}
 
           {/* 6. Fees & duration */}
-          {course.feesInfo && (
+          {(course.feesInfo || course.feesRange) && (
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900">Fees & duration</h2>
-              <p className="mt-3 text-gray-700">{course.feesInfo}</p>
+              {course.feesRange && (
+                <p className="mt-3 rounded-xl border border-brand/20 bg-brand-light p-4 text-gray-800">
+                  <span className="font-semibold">Approximate fees:</span> {course.feesRange}{" "}
+                  <span className="text-sm text-gray-500">
+                    — exact fees are confirmed during free counselling.
+                  </span>
+                </p>
+              )}
+              {course.feesInfo && <p className="mt-3 text-gray-700">{course.feesInfo}</p>}
+            </section>
+          )}
+
+          {/* Authority citations — approving / regulatory bodies (E-E-A-T) */}
+          {course.officialBodies && course.officialBodies.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Approved & regulated by</h2>
+              <p className="mt-2 text-gray-700">
+                The {course.courseShortName || course.title} colleges we recommend are approved by:
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {course.officialBodies.map((b, i) => (
+                  <li key={i}>
+                    <a
+                      href={b.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block rounded-full border border-brand px-4 py-1.5 text-sm font-medium text-brand transition hover:bg-brand-light"
+                    >
+                      {b.name} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
 
@@ -338,6 +384,25 @@ export default async function CoursePage({
               <li>✓ Recognised colleges & clear fee guidance</li>
             </ul>
           </section>
+
+          {/* Student testimonials (real names only — empty until provided) */}
+          {settings.testimonials && settings.testimonials.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">What our students say</h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {settings.testimonials.map((t, i) => (
+                  <figure key={i} className="rounded-xl border border-gray-200 bg-white p-5">
+                    <blockquote className="text-gray-700">“{t.text}”</blockquote>
+                    <figcaption className="mt-3 text-sm font-semibold text-gray-900">
+                      {t.name}
+                      {t.area ? `, ${t.area}` : ""}
+                      {t.course ? ` · ${t.course}` : ""}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* 9. Branch info */}
           <section className="mb-8">

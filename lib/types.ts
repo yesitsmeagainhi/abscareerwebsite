@@ -1,5 +1,16 @@
 export type FAQ = { question: string; answer: string };
 
+/** A regulatory/approving body to cite for E-E-A-T (e.g. PCI, MSBTE, INC). */
+export type OfficialBody = { name: string; url: string };
+
+/** A student testimonial / review shown on the site (real names only). */
+export type Testimonial = {
+  name: string;
+  area?: string; // e.g. "Andheri"
+  course?: string; // e.g. "D.Pharm"
+  text: string;
+};
+
 export type QuickFacts = {
   duration?: string;
   eligibility?: string;
@@ -28,6 +39,10 @@ export type Course = {
   documentsRequired?: string[];
   admissionSteps?: string[];
   feesInfo?: string;
+  /** Short approximate fee range shown on-page, e.g. "₹15,000–₹1,00,000/year". */
+  feesRange?: string;
+  /** Approving / regulatory bodies — rendered as outbound authority citations. */
+  officialBodies?: OfficialBody[];
   careerScope?: string;
   /** Specific job roles after the course. */
   jobRoles?: string[];
@@ -40,6 +55,8 @@ export type Course = {
   faqs?: FAQ[];
   seo?: { title?: string; description?: string };
   order?: number;
+  /** ISO date string — when this content was last reviewed (freshness / E-E-A-T). */
+  updatedAt?: string;
 };
 
 export type Branch = {
@@ -61,6 +78,8 @@ export type Branch = {
   /** Branch-specific FAQs. */
   faqs?: FAQ[];
   order?: number;
+  /** ISO date string — when this branch info was last reviewed. */
+  updatedAt?: string;
 };
 
 export type SiteSettings = {
@@ -76,6 +95,11 @@ export type SiteSettings = {
   address?: string;
   mapEmbedUrl?: string;
   socials?: { facebook?: string; instagram?: string; youtube?: string };
+  /** Named reviewer/author shown as a byline (E-E-A-T for YMYL pages). */
+  reviewerName?: string;
+  reviewerCredential?: string;
+  /** Real student testimonials shown across the site. */
+  testimonials?: Testimonial[];
 };
 
 export type Lead = {
