@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import AreaCoursePage from "@/components/AreaCoursePage";
+import LocalityCoursePage from "@/components/LocalityCoursePage";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import EnquiryForm from "@/components/EnquiryForm";
 import {
@@ -30,16 +31,25 @@ import {
   siblingsForBranch,
   siblingsForCourse,
 } from "@/lib/locations";
+import {
+  getLocalityPage,
+  getLocalitySlugs,
+  localitiesForArea,
+  localityDescription,
+  localitySiblings,
+  localityTitle,
+} from "@/lib/localities";
 import { CONTENT_UPDATED, SITE_URL, formatDate, whatsappLink } from "@/lib/site";
 
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const [courseSlugs, locationSlugs] = await Promise.all([
+  const [courseSlugs, locationSlugs, localitySlugs] = await Promise.all([
     getCourseSlugs(),
     getLocationSlugs(),
+    getLocalitySlugs(),
   ]);
-  return [...courseSlugs, ...locationSlugs].map((slug) => ({ slug }));
+  return [...courseSlugs, ...locationSlugs, ...localitySlugs].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -80,6 +90,18 @@ export async function generateMetadata({
       twitter: { card: "summary_large_image", title: ltitle, description: ldesc },
     };
   }
+  const area = await getLocalityPage(slug);
+  if (area) {
+    const atitle = `${localityTitle(area)} | ABS`;
+    const adesc = localityDescription(area);
+    return {
+      title: { absolute: atitle },
+      description: adesc,
+      alternates: { canonical: `/${area.slug}` },
+      openGraph: { type: "article", title: atitle, description: adesc, url: `/${area.slug}` },
+      twitter: { card: "summary_large_image", title: atitle, description: adesc },
+    };
+  }
   return { title: "Page not found" };
 }
 
@@ -100,9 +122,10 @@ export default async function CoursePage({
   if (!course) {
     const loc = await getLocationPage(slug);
     if (loc) {
-      const [siblingAreas, otherCourses] = await Promise.all([
+      const [siblingAreas, otherCourses, localityChildren] = await Promise.all([
         siblingsForCourse(loc),
         siblingsForBranch(loc),
+        localitiesForArea(loc.course.slug, loc.branch.slug),
       ]);
       return (
         <AreaCoursePage
@@ -111,6 +134,20 @@ export default async function CoursePage({
           allCourses={allCourses}
           siblingAreas={siblingAreas}
           otherCourses={otherCourses}
+          localityChildren={localityChildren}
+        />
+      );
+    }
+    // Or a course×locality area page (e.g. /d-pharma-admission-naupada).
+    const area = await getLocalityPage(slug);
+    if (area) {
+      const siblings = await localitySiblings(area);
+      return (
+        <LocalityCoursePage
+          page={area}
+          settings={settings}
+          allCourses={allCourses}
+          siblings={siblings}
         />
       );
     }

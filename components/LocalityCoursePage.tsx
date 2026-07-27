@@ -12,46 +12,45 @@ import {
   speakableSchema,
 } from "@/components/Schema";
 import type { Course, SiteSettings } from "@/lib/types";
+import { courseKeyword, locationSlug } from "@/lib/locations";
 import {
-  courseKeyword,
-  locationFaqs,
-  locationIntro,
-  type LocationPage,
-} from "@/lib/locations";
-import type { LocalityPage } from "@/lib/localities";
+  localityFaqs,
+  localityIntro,
+  type LocalityPage,
+} from "@/lib/localities";
 import { SITE_URL, whatsappLink } from "@/lib/site";
 
-// Renders a single course×location "money page" (e.g. D Pharma admission in
-// Thane). Fully server-rendered, with unique local content (the branch's real
-// localities, transport, address) so each of the 36 pages is genuinely distinct.
-export default function AreaCoursePage({
+// Renders a single course×locality area page (e.g. D Pharma admission in
+// Naupada). Fully server-rendered. Each page is kept genuinely distinct by the
+// locality's real hook (nearest station / landmark) and its serving branch's
+// real NAP — a service-area page, not a doorway page. It links UP to the branch
+// money page and the course pillar, and SIDEWAYS to other localities nearby.
+export default function LocalityCoursePage({
   page,
   settings,
   allCourses,
-  siblingAreas,
-  otherCourses,
-  localityChildren = [],
+  siblings,
 }: {
-  page: LocationPage;
+  page: LocalityPage;
   settings: SiteSettings;
   allCourses: Course[];
-  siblingAreas: LocationPage[];
-  otherCourses: LocationPage[];
-  localityChildren?: LocalityPage[];
+  siblings: LocalityPage[];
 }) {
-  const { course, branch } = page;
+  const { course, locality, branch } = page;
   const kw = courseKeyword(course);
   const phone = branch.phone || settings.phone;
   const courseTitles = allCourses.map((c) => c.courseShortName || c.title);
   const url = `${SITE_URL}/${page.slug}`;
-  const faqs = locationFaqs(page);
+  const areaSlug = locationSlug(course, branch); // the branch money page, e.g. /d-pharma-admission-thane
+  const faqs = localityFaqs(page);
   const howTo = howToSchema(course);
 
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
     { name: kw, path: `/${course.slug}` },
-    { name: `${branch.name}`, path: `/${page.slug}` },
+    { name: `${branch.name}`, path: `/${areaSlug}` },
+    { name: locality.name, path: `/${page.slug}` },
   ];
 
   return (
@@ -68,10 +67,10 @@ export default function AreaCoursePage({
         <div className="mx-auto max-w-5xl px-4 py-10">
           <Breadcrumbs items={crumbs} />
           <h1 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
-            {kw} Admission in {branch.name}, Mumbai — 2026
+            {kw} Admission in {locality.name}, Mumbai — 2026
           </h1>
           <p className="speakable-answer mt-4 max-w-2xl text-lg leading-relaxed text-gray-700">
-            {locationIntro(page)}
+            {localityIntro(page)}
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             {phone && (
@@ -86,7 +85,7 @@ export default function AreaCoursePage({
               <a
                 href={whatsappLink(
                   settings.whatsappNumber,
-                  `Hi, I want ${kw} admission near ${branch.name} for 2026.`,
+                  `Hi, I want ${kw} admission — I'm from ${locality.name}. Details for 2026?`,
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -101,53 +100,29 @@ export default function AreaCoursePage({
 
       <div className="mx-auto grid max-w-5xl gap-10 px-4 py-12 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-8">
-          {/* Why ABS branch for this course */}
+          {/* Why ABS for this locality */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900">
-              Why choose ABS {branch.name} for {kw} admission?
+              {kw} admission for {locality.name} students
             </h2>
             <p className="mt-3 text-gray-700">
-              {branch.intro ||
-                `Our ${branch.name} branch helps students across the area get admission with free, honest counselling.`}{" "}
-              For {kw}, our {branch.name} counsellors guide you to approved colleges, explain the
-              real 2026 fees, and support you through every step — from choosing the right college to
-              confirming your seat.
+              {locality.name} is {locality.hook}. Students from here get {kw} admission guidance at
+              our nearby ABS {branch.name} branch — approved colleges only, honest 2026 fees, and
+              support through every step, from choosing the right college to confirming your seat.
             </p>
             <ul className="mt-4 grid gap-2 text-gray-700 sm:grid-cols-2">
-              <li>✓ Free {kw} counselling near {branch.name}</li>
+              <li>✓ Free {kw} counselling near {locality.name}</li>
               <li>✓ Approved / recognised colleges only</li>
               <li>✓ Honest, upfront fee guidance</li>
               <li>✓ Trusted since {settings.foundingYear || "2009"}</li>
             </ul>
           </section>
 
-          {/* Localities served — unique per branch */}
-          {branch.localities && branch.localities.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900">
-                Areas near {branch.name} we serve for {kw}
-              </h2>
-              <p className="mt-2 text-gray-700">
-                Students from these areas around {branch.name} come to ABS for {kw} admission:
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {branch.localities.map((a) => (
-                  <span
-                    key={a}
-                    className="rounded-full bg-brand-light px-3 py-1 text-sm font-medium text-brand"
-                  >
-                    {a}
-                  </span>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* How to reach + address */}
+          {/* Nearest branch + how to reach (real NAP) */}
           {(branch.address || branch.transport) && (
             <section>
               <h2 className="text-2xl font-bold text-gray-900">
-                ABS {branch.name} branch — how to reach
+                Your nearest branch from {locality.name} — ABS {branch.name}
               </h2>
               {branch.address && <p className="mt-2 text-gray-700">{branch.address}</p>}
               {branch.transport && <p className="mt-2 text-gray-700">{branch.transport}</p>}
@@ -176,7 +151,7 @@ export default function AreaCoursePage({
                   { label: "Approved by", value: course.quickFacts?.approvedBy },
                   { label: "Approx. fees", value: course.feesRange },
                   { label: "Admission 2026", value: course.quickFacts?.admissionStatus || "Open" },
-                  { label: "Location", value: `${branch.name}, Mumbai` },
+                  { label: "Serving branch", value: `ABS ${branch.name}, Mumbai` },
                 ]
                   .filter((f) => f.value)
                   .map((f, i) => (
@@ -197,7 +172,7 @@ export default function AreaCoursePage({
           {course.eligibilityPoints && course.eligibilityPoints.length > 0 && (
             <section>
               <h2 className="text-2xl font-bold text-gray-900">
-                {kw} eligibility — can I apply from {branch.name}?
+                {kw} eligibility — can I apply from {locality.name}?
               </h2>
               <ul className="mt-3 space-y-2">
                 {course.eligibilityPoints.map((p, i) => (
@@ -214,7 +189,7 @@ export default function AreaCoursePage({
           {course.admissionSteps && course.admissionSteps.length > 0 && (
             <section>
               <h2 className="text-2xl font-bold text-gray-900">
-                {kw} admission process from {branch.name} (2026)
+                {kw} admission process from {locality.name} (2026)
               </h2>
               <ol className="mt-3 space-y-3">
                 {course.admissionSteps.map((s, i) => (
@@ -229,21 +204,18 @@ export default function AreaCoursePage({
             </section>
           )}
 
-          {/* Read more about the course (link equity to the pillar page) */}
+          {/* Link equity: up to the branch money page and the course pillar */}
           <section className="rounded-xl border border-brand/20 bg-brand-light p-5">
             <p className="text-gray-800">
-              Want the full {kw} course details — subjects, career scope, salary and more?{" "}
-              <Link href={`/${course.slug}`} className="font-semibold text-brand hover:underline">
-                Read the complete {kw} guide →
+              Want {kw} details for the whole {branch.name} area?{" "}
+              <Link href={`/${areaSlug}`} className="font-semibold text-brand hover:underline">
+                See {kw} admission in {branch.name} →
               </Link>
             </p>
             <p className="mt-2 text-gray-800">
-              Prefer to visit us?{" "}
-              <Link
-                href={`/branches/${branch.slug}`}
-                className="font-semibold text-brand hover:underline"
-              >
-                See the ABS {branch.name} branch page →
+              Or read the full {kw} guide — subjects, career scope, salary and more:{" "}
+              <Link href={`/${course.slug}`} className="font-semibold text-brand hover:underline">
+                Complete {kw} guide →
               </Link>
             </p>
           </section>
@@ -251,7 +223,7 @@ export default function AreaCoursePage({
           {/* FAQ */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900">
-              {kw} admission in {branch.name} — FAQs
+              {kw} admission in {locality.name} — FAQs
             </h2>
             <div className="mt-4 divide-y divide-gray-200 rounded-xl border border-gray-200">
               {faqs.map((f, i) => (
@@ -265,64 +237,20 @@ export default function AreaCoursePage({
             </div>
           </section>
 
-          {/* Localities served — course×locality area pages under this branch */}
-          {localityChildren.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {kw} admission in areas near {branch.name}
-              </h2>
-              <p className="mt-2 text-gray-700">
-                We guide {kw} students from these areas around {branch.name}. Pick yours for local
-                guidance:
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {localityChildren.map((l) => (
-                  <Link
-                    key={l.slug}
-                    href={`/${l.slug}`}
-                    className="rounded-full border border-brand px-4 py-1.5 text-sm font-medium text-brand transition hover:bg-brand-light"
-                  >
-                    {kw} in {l.locality.name}
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Same course in other areas */}
-          {siblingAreas.length > 0 && (
+          {/* Same course in other nearby localities */}
+          {siblings.length > 0 && (
             <section>
               <h3 className="text-lg font-bold text-gray-900">
-                {kw} admission in other Mumbai areas
+                {kw} admission in other areas near {branch.name}
               </h3>
               <div className="mt-3 flex flex-wrap gap-2">
-                {siblingAreas.map((s) => (
+                {siblings.map((s) => (
                   <Link
                     key={s.slug}
                     href={`/${s.slug}`}
                     className="rounded-full border border-brand px-4 py-1.5 text-sm font-medium text-brand transition hover:bg-brand-light"
                   >
-                    {kw} in {s.branch.name}
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Other courses at this branch */}
-          {otherCourses.length > 0 && (
-            <section>
-              <h3 className="text-lg font-bold text-gray-900">
-                Other courses at ABS {branch.name}
-              </h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {otherCourses.map((s) => (
-                  <Link
-                    key={s.slug}
-                    href={`/${s.slug}`}
-                    className="rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:border-brand hover:text-brand"
-                  >
-                    {courseKeyword(s.course)} in {branch.name}
+                    {kw} in {s.locality.name}
                   </Link>
                 ))}
               </div>
@@ -332,7 +260,7 @@ export default function AreaCoursePage({
           {/* Bottom CTA */}
           <section className="rounded-2xl bg-brand p-6 text-center text-white">
             <h2 className="text-xl font-bold">
-              Start your {kw} admission in {branch.name} today
+              Start your {kw} admission from {locality.name} today
             </h2>
             <p className="mt-1 text-white/90">Free counselling — we&apos;ll call you back.</p>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
@@ -348,7 +276,7 @@ export default function AreaCoursePage({
                 <a
                   href={whatsappLink(
                     settings.whatsappNumber,
-                    `Hi, I want ${kw} admission near ${branch.name}.`,
+                    `Hi, I want ${kw} admission — I'm from ${locality.name}.`,
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -365,7 +293,7 @@ export default function AreaCoursePage({
         <aside className="lg:col-span-1">
           <div className="sticky top-20 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold text-gray-900">
-              Enquire — {kw} in {branch.name}
+              Enquire — {kw} in {locality.name}
             </h2>
             <p className="mb-4 mt-1 text-sm text-gray-500">
               Free counselling. We&apos;ll call you back.

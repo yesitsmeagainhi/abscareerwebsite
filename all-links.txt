@@ -1,0 +1,71 @@
+# CORE PAGES
+https://abscareer.com/
+https://abscareer.com/courses
+https://abscareer.com/branches
+https://abscareer.com/blog
+https://abscareer.com/about
+https://abscareer.com/contact
+
+# COURSE PAGES (6)
+https://abscareer.com/d-pharma-admission-2026
+https://abscareer.com/b-pharma-admission-2026
+https://abscareer.com/gnm-nursing-admission-2026
+https://abscareer.com/bsc-nursing-admission-2026
+https://abscareer.com/anm-nursing-admission-2026
+https://abscareer.com/dmlt-admission-2026
+
+# BRANCH PAGES (6)
+https://abscareer.com/branches/thane
+https://abscareer.com/branches/kurla
+https://abscareer.com/branches/malad
+https://abscareer.com/branches/bhayandar
+https://abscareer.com/branches/nalasopara
+https://abscareer.com/branches/andheri
+
+# COURSE x AREA MONEY PAGES (36)
+https://abscareer.com/d-pharma-admission-thane
+https://abscareer.com/d-pharma-admission-kurla
+https://abscareer.com/d-pharma-admission-malad
+https://abscareer.com/d-pharma-admission-bhayandar
+https://abscareer.com/d-pharma-admission-nalasopara
+https://abscareer.com/d-pharma-admission-andheri
+https://abscareer.com/b-pharma-admission-thane
+https://abscareer.com/b-pharma-admission-kurla
+https://abscareer.com/b-pharma-admission-malad
+https://abscareer.com/b-pharma-admission-bhayandar
+https://abscareer.com/b-pharma-admission-nalasopara
+https://abscareer.com/b-pharma-admission-andheri
+https://abscareer.com/gnm-nursing-admission-thane
+https://abscareer.com/gnm-nursing-admission-kurla
+https://abscareer.com/gnm-nursing-admission-malad
+https://abscareer.com/gnm-nursing-admission-bhayandar
+https://abscareer.com/gnm-nursing-admission-nalasopara
+https://abscareer.com/gnm-nursing-admission-andheri
+https://abscareer.com/bsc-nursing-admission-thane
+https://abscareer.com/bsc-nursing-admission-kurla
+https://abscareer.com/bsc-nursing-admission-malad
+https://abscareer.com/bsc-nursing-admission-bhayandar
+https://abscareer.com/bsc-nursing-admission-nalasopara
+https://abscareer.com/bsc-nursing-admission-andheri
+https://abscareer.com/anm-nursing-admission-thane
+https://abscareer.com/anm-nursing-admission-kurla
+https://abscareer.com/anm-nursing-admission-malad
+https://abscareer.com/anm-nursing-admission-bhayandar
+https://abscareer.com/anm-nursing-admission-nalasopara
+https://abscareer.com/anm-nursing-admission-andheri
+https://abscareer.com/dmlt-admission-thane
+https://abscareer.com/dmlt-admission-kurla
+https://abscareer.com/dmlt-admission-malad
+https://abscareer.com/dmlt-admission-bhayandar
+https://abscareer.com/dmlt-admission-nalasopara
+https://abscareer.com/dmlt-admission-andheri
+
+# BLOG POSTS (4)
+https://abscareer.com/blog/d-pharma-admission-mumbai-2026
+https://abscareer.com/blog/d-pharm-vs-b-pharm
+https://abscareer.com/blog/nursing-courses-after-12th-mumbai
+https://abscareer.com/blog/career-after-dmlt
+
+# UTILITY
+https://abscareer.com/sitemap.xml
+https://abscareer.com/robots.txt

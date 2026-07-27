@@ -3,15 +3,17 @@ import type { MetadataRoute } from "next";
 import { getBranchSlugs, getCourseSlugs } from "@/lib/content";
 import { getBlogPosts } from "@/lib/blog";
 import { getLocationSlugs } from "@/lib/locations";
+import { getLocalitySlugs } from "@/lib/localities";
 import { CONTENT_UPDATED, SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [courseSlugs, branchSlugs, locationSlugs] = await Promise.all([
+  const [courseSlugs, branchSlugs, locationSlugs, localitySlugs] = await Promise.all([
     getCourseSlugs(),
     getBranchSlugs(),
     getLocationSlugs(),
+    getLocalitySlugs(),
   ]);
   const posts = await getBlogPosts();
   const lastModified = new Date(CONTENT_UPDATED);
@@ -41,6 +43,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // Course × locality area pages (e.g. /d-pharma-admission-naupada).
+  const localityRoutes = localitySlugs.map((slug) => ({
+    url: `${SITE_URL}/${slug}`,
+    lastModified,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   const branchRoutes = branchSlugs.map((slug) => ({
     url: `${SITE_URL}/branches/${slug}`,
     lastModified,
@@ -59,6 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticRoutes,
     ...courseRoutes,
     ...locationRoutes,
+    ...localityRoutes,
     ...branchRoutes,
     ...blogRoutes,
   ];
