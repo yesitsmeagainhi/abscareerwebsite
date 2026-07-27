@@ -132,6 +132,12 @@ html:has(.gnm-lp) { scroll-behavior: smooth; }
 .gnm-lp .thanks-actions .btn { width: 100%; }
 .gnm-lp .thanks-actions .bar-wa { background: #22C15E; color: #fff; }
 
+/* standalone thank-you page layout */
+.gnm-lp .ty-wrap { min-height: 72vh; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
+.gnm-lp .ty-card { max-width: 520px; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 18px 44px rgba(11, 37, 64, .12); padding: 40px 30px; }
+.gnm-lp .ty-card .thanks h3 { font-size: 26px; }
+.gnm-lp .ty-sub { font-size: 13px; color: #5A7186; margin-top: 18px; }
+
 /* sticky mobile bar */
 .gnm-lp .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; display: none; z-index: 60; background: #fff; border-top: 1px solid var(--line); padding: 10px 12px; gap: 10px; box-shadow: 0 -6px 20px rgba(11, 37, 64, .10); }
 .gnm-lp .sticky-bar a { flex: 1; text-align: center; font-size: 15px; padding: 12px 10px; }

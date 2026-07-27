@@ -3,12 +3,13 @@
 import { useState } from "react";
 
 // The signature "eligibility slip" form. On submit it posts a single lead to
-// the site's real /api/enquiry endpoint (→ MySQL + counsellor email), the same
-// pipeline the rest of the site uses — no Google Sheet / WhatsApp-only fallback.
-// The 12th stream and Mumbai area are folded into the lead's course/city so
-// nothing is lost and no DB migration is needed.
+// the site's real /api/enquiry endpoint (→ MySQL + counsellor email), then
+// redirects to the dedicated /thank-you page — a real page load at a stable URL
+// so it can be used as a Google Ads "page load" lead conversion trigger.
+// The 12th stream and Mumbai area ride along in the lead's course/city.
 
 const SOURCE_PAGE = "/lp/gnm-nursing-mumbai";
+const THANK_YOU_URL = "/lp/gnm-nursing-mumbai/thank-you";
 
 declare global {
   interface Window {
@@ -16,20 +17,11 @@ declare global {
   }
 }
 
-export default function GnmLeadForm({
-  waHref,
-  callHref,
-  phone,
-}: {
-  waHref: string;
-  callHref: string;
-  phone?: string;
-}) {
+export default function GnmLeadForm() {
   const [nameErr, setNameErr] = useState(false);
   const [mobErr, setMobErr] = useState(false);
   const [submitErr, setSubmitErr] = useState("");
   const [loading, setLoading] = useState(false);
-  const [doneName, setDoneName] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,45 +56,20 @@ export default function GnmLeadForm({
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.message || "Could not submit. Please call us instead.");
 
-      // Report the lead to GA4 (standard recommended event). Link GA4 → Google
-      // Ads and mark this as a key event to use it for ad conversion tracking.
+      // Report the lead to GA4 (survives the redirect via sendBeacon).
       if (typeof window.gtag === "function") {
         window.gtag("event", "generate_lead", {
           form: "gnm-nursing-mumbai",
           course: "GNM Nursing",
         });
       }
-      setDoneName(name);
+
+      // Real page load at a stable URL → Google Ads "page load" conversion.
+      window.location.assign(THANK_YOU_URL);
     } catch (err) {
       setSubmitErr(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
       setLoading(false);
     }
-  }
-
-  if (doneName) {
-    return (
-      <div className="slip" id="apply">
-        <div className="thanks">
-          <div className="thanks-badge">&#10003;</div>
-          <h3>Thank you, {doneName}!</h3>
-          <p>
-            Your scholarship eligibility check is submitted. Our admission department will connect
-            with you soon. You can also reach us directly right now:
-          </p>
-          <div className="thanks-actions">
-            {phone && (
-              <a className="btn btn-primary btn-block" href={callHref}>
-                &#9742; Call {phone}
-              </a>
-            )}
-            <a className="btn bar-wa btn-block" href={waHref}>
-              &#128172; Chat on WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (

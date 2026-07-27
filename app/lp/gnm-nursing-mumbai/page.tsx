@@ -116,7 +116,7 @@ export default async function GnmNursingLandingPage() {
             </div>
           </div>
 
-          <GnmLeadForm waHref={waHref} callHref={callHref} phone={phone} />
+          <GnmLeadForm />
         </div>
       </header>
 
