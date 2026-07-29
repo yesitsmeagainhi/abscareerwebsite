@@ -34,15 +34,21 @@ function urlBase64ToUint8Array(base64: string): Uint8Array {
 
 // Register the service worker and subscribe this device to Web Push so leads
 // notify even when the tab is closed (Chrome/Android/desktop; iOS 16.4+ PWA).
-async function subscribeToPush(): Promise<boolean> {
-  if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
+// Returns a human-readable reason so the admin can see if it failed.
+async function subscribeToPush(): Promise<{ ok: boolean; reason: string }> {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    return { ok: false, reason: "This browser can't do push (use Chrome; on iPhone, Add to Home Screen first)." };
+  }
+  if (!("Notification" in window) || Notification.permission !== "granted") {
+    return { ok: false, reason: "Allow notifications when the browser asks." };
+  }
   try {
     const reg = await navigator.serviceWorker.register("/sw.js");
     await navigator.serviceWorker.ready;
     const res = await fetch("/api/admin/push/public-key", { cache: "no-store" });
-    if (!res.ok) return false;
+    if (!res.ok) return { ok: false, reason: `Server push key unavailable (HTTP ${res.status}).` };
     const { publicKey } = await res.json();
-    if (!publicKey) return false;
+    if (!publicKey) return { ok: false, reason: "Server returned no push key." };
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
       sub = await reg.pushManager.subscribe({
@@ -55,9 +61,10 @@ async function subscribeToPush(): Promise<boolean> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(sub),
     });
-    return save.ok;
-  } catch {
-    return false;
+    if (!save.ok) return { ok: false, reason: `Couldn't save subscription (HTTP ${save.status}).` };
+    return { ok: true, reason: "Push subscribed on this device ✓" };
+  } catch (e) {
+    return { ok: false, reason: (e as Error)?.message || "Subscription failed." };
   }
 }
 
@@ -66,6 +73,8 @@ export default function LeadNotifier() {
   const [supported, setSupported] = useState(true);
   const [granted, setGranted] = useState(false);
   const [toast, setToast] = useState<LatestLead>(null);
+  const [pushMsg, setPushMsg] = useState("");
+  const [testing, setTesting] = useState(false);
 
   const lastSeen = useRef(0);
   const baselined = useRef(false);
@@ -196,12 +205,41 @@ export default function LeadNotifier() {
     localStorage.setItem(LS_ON, "1");
     beep(); // confirmation ping
     // If permission granted, register for real Web Push (works when tab closed).
-    if (ok) subscribeToPush();
+    if (ok) {
+      setPushMsg("Setting up push…");
+      const r = await subscribeToPush();
+      setPushMsg(r.reason);
+    } else {
+      setPushMsg("Notifications blocked — allow them in the browser to get alerts.");
+    }
   }, [beep]);
 
   const disableAlerts = useCallback(() => {
     setEnabled(false);
+    setPushMsg("");
     localStorage.removeItem(LS_ON);
+  }, []);
+
+  const sendTest = useCallback(async () => {
+    setTesting(true);
+    setPushMsg("Sending test…");
+    try {
+      const res = await fetch("/api/admin/push/test", { method: "POST" });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPushMsg(`Test failed (HTTP ${res.status}).`);
+      } else if (!d.subscriptions) {
+        setPushMsg("0 devices subscribed — click Enable & Allow on this device first.");
+      } else if (d.sent > 0) {
+        setPushMsg(`Test sent to ${d.sent}/${d.subscriptions} device(s). Check for the notification.`);
+      } else {
+        setPushMsg(`0 delivered of ${d.subscriptions}. ${(d.errors || []).join("; ").slice(0, 160)}`);
+      }
+    } catch (e) {
+      setPushMsg((e as Error)?.message || "Test failed.");
+    } finally {
+      setTesting(false);
+    }
   }, []);
 
   return (
@@ -231,6 +269,12 @@ export default function LeadNotifier() {
         </div>
       )}
 
+      {pushMsg && (
+        <div className="max-w-xs rounded-lg bg-gray-900/90 px-3 py-2 text-xs text-white shadow-lg">
+          {pushMsg}
+        </div>
+      )}
+
       {!enabled ? (
         <button
           onClick={enableAlerts}
@@ -239,13 +283,22 @@ export default function LeadNotifier() {
           🔔 Enable lead alerts
         </button>
       ) : (
-        <button
-          onClick={disableAlerts}
-          title="Turn off lead alerts"
-          className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow hover:bg-gray-50"
-        >
-          🔔 Alerts on{supported && granted ? "" : " (in-app)"} · turn off
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={sendTest}
+            disabled={testing}
+            className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white shadow hover:bg-brand-dark disabled:opacity-60"
+          >
+            {testing ? "Sending…" : "Send test"}
+          </button>
+          <button
+            onClick={disableAlerts}
+            title="Turn off lead alerts"
+            className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow hover:bg-gray-50"
+          >
+            🔔 On{supported && granted ? "" : " (in-app)"} · off
+          </button>
+        </div>
       )}
     </div>
   );

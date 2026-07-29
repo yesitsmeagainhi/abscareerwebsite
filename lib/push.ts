@@ -78,16 +78,31 @@ export async function saveSubscription(sub: PushSub): Promise<void> {
 
 type PushPayload = { title: string; body?: string; url?: string; tag?: string };
 
+export type SendResult = { total: number; sent: number; failed: number; errors: string[] };
+
+/** How many devices are currently subscribed. */
+export async function getSubscriptionCount(): Promise<number> {
+  if (!dbConfigured) return 0;
+  await ensureTables();
+  const rows = await query<{ n: number }>(`SELECT COUNT(*) AS n FROM push_subscriptions`);
+  return Number(rows[0]?.n ?? 0);
+}
+
 /** Send a push to every subscribed device; prune expired subscriptions. */
-export async function sendPushToAll(payload: PushPayload): Promise<void> {
-  if (!dbConfigured) return;
+export async function sendPushToAll(payload: PushPayload): Promise<SendResult> {
+  const result: SendResult = { total: 0, sent: 0, failed: 0, errors: [] };
+  if (!dbConfigured) return result;
   const vapid = await getVapid();
-  if (!vapid) return;
+  if (!vapid) {
+    result.errors.push("no VAPID keys");
+    return result;
+  }
   webpush.setVapidDetails(vapid.subject, vapid.publicKey, vapid.privateKey);
   const subs = await query<{ id: number; endpoint: string; p256dh: string; auth: string }>(
     `SELECT id, endpoint, p256dh, auth FROM push_subscriptions`,
   );
-  if (!subs.length) return;
+  result.total = subs.length;
+  if (!subs.length) return result;
   const data = JSON.stringify(payload);
   await Promise.all(
     subs.map(async (s) => {
@@ -96,8 +111,12 @@ export async function sendPushToAll(payload: PushPayload): Promise<void> {
           { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
           data,
         );
+        result.sent += 1;
       } catch (e) {
+        result.failed += 1;
         const code = (e as { statusCode?: number })?.statusCode;
+        const msg = (e as { body?: string; message?: string })?.body || (e as Error)?.message || "";
+        result.errors.push(`${code ?? "?"}: ${String(msg).slice(0, 120)}`);
         if (code === 404 || code === 410) {
           try {
             await getPool().execute(`DELETE FROM push_subscriptions WHERE id = ?`, [s.id]);
@@ -108,4 +127,5 @@ export async function sendPushToAll(payload: PushPayload): Promise<void> {
       }
     }),
   );
+  return result;
 }
