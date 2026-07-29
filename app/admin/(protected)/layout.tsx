@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { dbConfigured } from "@/lib/db";
 import { logoutAction } from "@/app/admin/actions";
+import LeadNotifier from "@/components/admin/LeadNotifier";
 
 const NAV = [
   { href: "/admin", label: "Dashboard" },
@@ -13,7 +14,14 @@ const NAV = [
   { href: "/admin/leads", label: "Leads" },
 ];
 
-export const metadata = { title: "Admin", robots: { index: false } };
+export const metadata = {
+  title: "Admin",
+  robots: { index: false },
+  // Lets the admin be installed to the iPhone Home Screen (standalone app),
+  // which is what enables OS notifications from the lead notifier.
+  manifest: "/admin-manifest.webmanifest",
+  appleWebApp: { capable: true, title: "ABS Leads", statusBarStyle: "default" as const },
+};
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   await requireAdmin();
@@ -63,6 +71,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       )}
 
       <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+
+      {/* Live new-lead alerts (banner + sound + OS notification) */}
+      <LeadNotifier />
     </div>
   );
 }

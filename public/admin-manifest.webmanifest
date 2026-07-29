@@ -1,0 +1,9 @@
+{
+  "name": "ABS Leads Admin",
+  "short_name": "ABS Leads",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d7c84"
+}

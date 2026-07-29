@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 // no per-user account. Set ADMIN_PASSWORD and ADMIN_SESSION_SECRET in env.
 
 const COOKIE = "abs_admin";
-const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+const MAX_AGE = 60 * 60 * 24 * 180; // 180 days — keep the admin logged in on their phone
 
 const SECRET = process.env.ADMIN_SESSION_SECRET || "";
 const PASSWORD = process.env.ADMIN_PASSWORD || "";
