@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import type { ResultSetHeader } from "mysql2";
 
 import { dbConfigured, getPool } from "./db";
+import { sendPushToAll } from "./push";
 import type { Lead } from "./types";
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, LEAD_NOTIFY_EMAIL } = process.env;
@@ -97,6 +98,17 @@ export async function saveLead(lead: Lead, timestamp: string): Promise<number | 
       id = await insertLead(lead);
     } catch (e) {
       console.error("[lead] db error", e);
+    }
+    // Push a browser notification to subscribed admin devices (best-effort).
+    try {
+      await sendPushToAll({
+        title: `🔔 New lead: ${lead.name}`,
+        body: [lead.course, lead.city].filter(Boolean).join(" · ") || "New website enquiry",
+        url: "/admin/leads",
+        tag: id ? `lead-${id}` : "lead",
+      });
+    } catch (e) {
+      console.error("[lead] push error", e);
     }
   }
   if (emailConfigured) {

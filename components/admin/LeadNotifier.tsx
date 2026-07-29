@@ -22,6 +22,45 @@ const LS_LAST = "abs_last_lead_id";
 const LS_ON = "abs_alerts_on";
 const POLL_MS = 20000;
 
+// Convert a base64url VAPID key to the Uint8Array the Push API expects.
+function urlBase64ToUint8Array(base64: string): Uint8Array {
+  const padding = "=".repeat((4 - (base64.length % 4)) % 4);
+  const b64 = (base64 + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = atob(b64);
+  const arr = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+
+// Register the service worker and subscribe this device to Web Push so leads
+// notify even when the tab is closed (Chrome/Android/desktop; iOS 16.4+ PWA).
+async function subscribeToPush(): Promise<boolean> {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
+  try {
+    const reg = await navigator.serviceWorker.register("/sw.js");
+    await navigator.serviceWorker.ready;
+    const res = await fetch("/api/admin/push/public-key", { cache: "no-store" });
+    if (!res.ok) return false;
+    const { publicKey } = await res.json();
+    if (!publicKey) return false;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
+      });
+    }
+    const save = await fetch("/api/admin/push/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(sub),
+    });
+    return save.ok;
+  } catch {
+    return false;
+  }
+}
+
 export default function LeadNotifier() {
   const [enabled, setEnabled] = useState(false);
   const [supported, setSupported] = useState(true);
@@ -37,7 +76,11 @@ export default function LeadNotifier() {
     setSupported(notifSupported);
     setGranted(notifSupported && Notification.permission === "granted");
     lastSeen.current = Number(localStorage.getItem(LS_LAST) || "0");
-    if (localStorage.getItem(LS_ON) === "1") setEnabled(true);
+    if (localStorage.getItem(LS_ON) === "1") {
+      setEnabled(true);
+      // Re-affirm the push subscription for this device on load.
+      if (notifSupported && Notification.permission === "granted") subscribeToPush();
+    }
   }, []);
 
   const beep = useCallback(() => {
@@ -136,19 +179,24 @@ export default function LeadNotifier() {
     } catch {
       /* ignore */
     }
+    let ok = false;
     if ("Notification" in window && Notification.permission !== "granted") {
       try {
         const p = await Notification.requestPermission();
-        setGranted(p === "granted");
+        ok = p === "granted";
+        setGranted(ok);
       } catch {
         /* ignore */
       }
     } else if ("Notification" in window) {
-      setGranted(Notification.permission === "granted");
+      ok = Notification.permission === "granted";
+      setGranted(ok);
     }
     setEnabled(true);
     localStorage.setItem(LS_ON, "1");
     beep(); // confirmation ping
+    // If permission granted, register for real Web Push (works when tab closed).
+    if (ok) subscribeToPush();
   }, [beep]);
 
   const disableAlerts = useCallback(() => {
