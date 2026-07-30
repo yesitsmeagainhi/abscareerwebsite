@@ -12,7 +12,7 @@ import "./bsc-lp.css";
 
 const archivo = Archivo({ subsets: ["latin"], weight: ["500", "600", "700"] });
 
-const PAGE = "bsc-nursing-mumbai";
+const PAGE = "bsc-nursing-admission-mumbai";
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "BSc Nursing seats available for 2026. Free counselling from Mumbai's admission team. Check scholarship eligibility — tuition may be 100% covered for eligible girl students.",
   robots: { index: false, follow: true },
-  alternates: { canonical: "/lp/bsc-nursing-mumbai" },
+  alternates: { canonical: "/lp/bsc-nursing-admission-mumbai" },
 };
 
 export default async function BscNursingLandingPage() {

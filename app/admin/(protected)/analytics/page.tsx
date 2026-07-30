@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const LPS = [
   { slug: "gnm-nursing-mumbai", label: "GNM Nursing" },
-  { slug: "bsc-nursing-mumbai", label: "BSc Nursing" },
+  { slug: "bsc-nursing-admission-mumbai", label: "BSc Nursing" },
 ];
 
 function pct(n: number, d: number): string {

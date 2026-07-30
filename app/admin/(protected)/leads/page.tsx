@@ -4,7 +4,8 @@ import { dbConfigured, listLeads } from "@/lib/admin-content";
 // Which landing page a lead came from, and whether via the form or the popup.
 const LP_LABELS: Record<string, string> = {
   "gnm-nursing-mumbai": "GNM Nursing",
-  "bsc-nursing-mumbai": "BSc Nursing",
+  "bsc-nursing-admission-mumbai": "BSc Nursing",
+  "bsc-nursing-mumbai": "BSc Nursing", // legacy slug (pre-rename leads)
 };
 
 function leadSource(sourcePage?: string): { lp: string; channel: "Form" | "Popup" | null } {

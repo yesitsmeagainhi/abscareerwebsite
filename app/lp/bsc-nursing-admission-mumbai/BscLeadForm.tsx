@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 
 import { track } from "@/lib/track";
 
-const PAGE = "bsc-nursing-mumbai";
+const PAGE = "bsc-nursing-admission-mumbai";
 const COURSE = "BSc Nursing";
 
 const EDU_OPTIONS = [
