@@ -51,6 +51,29 @@ export async function recordEvent(e: {
   );
 }
 
+// Temporary diagnostic: total rows + breakdown, to confirm events are stored.
+export async function getDebugCounts() {
+  if (!dbConfigured) return { db: false as const };
+  try {
+    await ensureTable();
+    const total = await query<{ n: number }>(`SELECT COUNT(*) AS n FROM lp_events`);
+    const byEvent = await query<{ event: string; n: number }>(
+      `SELECT event, COUNT(*) AS n FROM lp_events GROUP BY event`,
+    );
+    const byPage = await query<{ page: string; n: number }>(
+      `SELECT page, COUNT(*) AS n FROM lp_events GROUP BY page`,
+    );
+    return {
+      db: true as const,
+      total: Number(total[0]?.n ?? 0),
+      byEvent: byEvent.map((r) => ({ event: r.event, n: Number(r.n) })),
+      byPage: byPage.map((r) => ({ page: r.page, n: Number(r.n) })),
+    };
+  } catch (e) {
+    return { db: true as const, error: (e as Error)?.message || "query failed" };
+  }
+}
+
 export type LpStats = {
   page: string;
   totals: {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { isLpEvent, recordEvent } from "@/lib/analytics";
+import { getDebugCounts, isLpEvent, recordEvent } from "@/lib/analytics";
 
 // Public beacon endpoint: the LP posts interaction events here. Validated +
 // lightly rate-limited. Referrer/IP are read server-side, not trusted from body.
@@ -16,6 +16,11 @@ function rateLimited(ip: string) {
   }
   e.c += 1;
   return e.c > 40; // up to 40 events / 10s / IP
+}
+
+// Temporary diagnostic endpoint (no auth) to confirm events are being stored.
+export async function GET() {
+  return NextResponse.json(await getDebugCounts());
 }
 
 export async function POST(req: Request) {
