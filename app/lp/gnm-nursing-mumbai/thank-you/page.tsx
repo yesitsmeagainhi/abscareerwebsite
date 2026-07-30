@@ -5,6 +5,7 @@ import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 import { getSiteSettings } from "@/lib/content";
 import { whatsappLink } from "@/lib/site";
 
+import TrackedLink from "../TrackedLink";
 import "../gnm-lp.css";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600", "700", "800"] });
@@ -61,13 +62,23 @@ export default async function GnmThankYouPage() {
             </p>
             <div className="thanks-actions">
               {phone && (
-                <a className="btn btn-primary btn-block" href={callHref}>
+                <TrackedLink
+                  event="call_click"
+                  eventParams={{ location: "thankyou" }}
+                  className="btn btn-primary btn-block"
+                  href={callHref}
+                >
                   &#9742; Call {phone}
-                </a>
+                </TrackedLink>
               )}
-              <a className="btn bar-wa btn-block" href={waHref}>
+              <TrackedLink
+                event="whatsapp_click"
+                eventParams={{ location: "thankyou" }}
+                className="btn bar-wa btn-block"
+                href={waHref}
+              >
                 &#128172; Chat on WhatsApp
-              </a>
+              </TrackedLink>
             </div>
             <p className="ty-sub">
               <Link href="/lp/gnm-nursing-mumbai">&larr; Back to GNM Nursing admission page</Link>

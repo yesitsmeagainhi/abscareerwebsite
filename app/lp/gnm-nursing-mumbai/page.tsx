@@ -6,6 +6,7 @@ import { getSiteSettings } from "@/lib/content";
 import { whatsappLink } from "@/lib/site";
 
 import GnmLeadForm from "./GnmLeadForm";
+import TrackedLink from "./TrackedLink";
 import "./gnm-lp.css";
 
 // Bespoke landing-page fonts — loaded here (not in the root layout) so they
@@ -85,9 +86,15 @@ export default async function GnmNursingLandingPage() {
         <div className="wrap">
           <span className="brand">ABS Educational Solution</span>
           <span className="open">Admissions Open &middot; 2026&ndash;27</span>
-          <a className="btn btn-primary" href={callHref} style={{ padding: "8px 16px", fontSize: "13.5px" }}>
+          <TrackedLink
+            event="call_click"
+            eventParams={{ location: "topbar" }}
+            className="btn btn-primary"
+            href={callHref}
+            style={{ padding: "8px 16px", fontSize: "13.5px" }}
+          >
             Call Now
-          </a>
+          </TrackedLink>
         </div>
       </div>
 
@@ -112,7 +119,7 @@ export default async function GnmNursingLandingPage() {
             </div>
             <div className="cta-row">
               <a className="btn btn-primary" href="#apply">Check Scholarship Eligibility</a>
-              <a className="btn btn-ghost" href={waHref}>WhatsApp Us</a>
+              <TrackedLink event="whatsapp_click" eventParams={{ location: "hero" }} className="btn btn-ghost" href={waHref}>WhatsApp Us</TrackedLink>
             </div>
           </div>
 
@@ -208,7 +215,7 @@ export default async function GnmNursingLandingPage() {
           </div>
           <div className="cta-row" style={{ marginTop: "26px" }}>
             <a className="btn btn-primary" href="#apply">Check Scholarship Eligibility</a>
-            <a className="btn btn-ghost" href={waHref}>Chat on WhatsApp</a>
+            <TrackedLink event="whatsapp_click" eventParams={{ location: "mid" }} className="btn btn-ghost" href={waHref}>Chat on WhatsApp</TrackedLink>
           </div>
         </div>
       </section>
@@ -229,7 +236,7 @@ export default async function GnmNursingLandingPage() {
       </footer>
 
       <div className="sticky-bar">
-        <a className="btn bar-call" href={callHref}>&#9742; Call Now</a>
+        <TrackedLink event="call_click" eventParams={{ location: "sticky" }} className="btn bar-call" href={callHref}>&#9742; Call Now</TrackedLink>
         <a className="btn bar-wa" href="#apply">Check My Scholarship</a>
       </div>
     </div>
