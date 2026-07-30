@@ -8,6 +8,7 @@ import {
   deleteBlogPost,
   deleteBranch,
   deleteCourse,
+  deleteLead,
   saveBlogPost,
   saveBranch,
   saveCourse,
@@ -50,6 +51,14 @@ export async function loginAction(formData: FormData) {
 export async function logoutAction() {
   await destroySession();
   redirect("/admin/login");
+}
+
+// --- leads ---
+export async function deleteLeadAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(str(formData.get("id")));
+  if (id) await deleteLead(id);
+  revalidatePath("/admin/leads");
 }
 
 // --- courses ---

@@ -188,3 +188,9 @@ export async function listLeads(limit = 500): Promise<Lead[]> {
     sourcePage: r.source_page,
   }));
 }
+
+/** Delete a single lead by id. */
+export async function deleteLead(id: number): Promise<void> {
+  ensureDb();
+  await getPool().execute("DELETE FROM leads WHERE id = ?", [id]);
+}

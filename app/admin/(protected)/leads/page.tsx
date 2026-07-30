@@ -1,3 +1,4 @@
+import DeleteLeadButton from "@/components/admin/DeleteLeadButton";
 import { dbConfigured, listLeads } from "@/lib/admin-content";
 
 export default async function AdminLeads() {
@@ -26,6 +27,7 @@ export default async function AdminLeads() {
                 <th className="px-4 py-3">Course</th>
                 <th className="px-4 py-3">City</th>
                 <th className="px-4 py-3">Scholarship details</th>
+                <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -61,6 +63,9 @@ export default async function AdminLeads() {
                     <td className="px-4 py-3 text-gray-700">{l.course || "-"}</td>
                     <td className="px-4 py-3 text-gray-700">{l.city || "-"}</td>
                     <td className="px-4 py-3 text-gray-500">{details || "-"}</td>
+                    <td className="px-4 py-3 text-right">
+                      <DeleteLeadButton id={l.id!} name={l.name} />
+                    </td>
                   </tr>
                 );
               })}
