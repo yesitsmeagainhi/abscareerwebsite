@@ -1,6 +1,20 @@
 import DeleteLeadButton from "@/components/admin/DeleteLeadButton";
 import { dbConfigured, listLeads } from "@/lib/admin-content";
 
+// Which landing page a lead came from, and whether via the form or the popup.
+const LP_LABELS: Record<string, string> = {
+  "gnm-nursing-mumbai": "GNM Nursing",
+  "bsc-nursing-mumbai": "BSc Nursing",
+};
+
+function leadSource(sourcePage?: string): { lp: string; channel: "Form" | "Popup" | null } {
+  if (!sourcePage) return { lp: "Website", channel: null };
+  const channel: "Form" | "Popup" | null = sourcePage.includes("#popup") ? "Popup" : "Form";
+  const m = sourcePage.match(/\/lp\/([a-z0-9-]+)/i);
+  if (m) return { lp: LP_LABELS[m[1]] || m[1], channel };
+  return { lp: "Website", channel: null };
+}
+
 export default async function AdminLeads() {
   const leads = dbConfigured ? await listLeads() : [];
 
@@ -26,6 +40,7 @@ export default async function AdminLeads() {
                 <th className="px-4 py-3">Phone</th>
                 <th className="px-4 py-3">Course</th>
                 <th className="px-4 py-3">City</th>
+                <th className="px-4 py-3">Source</th>
                 <th className="px-4 py-3">Scholarship details</th>
                 <th className="px-4 py-3"></th>
               </tr>
@@ -62,6 +77,27 @@ export default async function AdminLeads() {
                     </td>
                     <td className="px-4 py-3 text-gray-700">{l.course || "-"}</td>
                     <td className="px-4 py-3 text-gray-700">{l.city || "-"}</td>
+                    <td className="px-4 py-3">
+                      {(() => {
+                        const s = leadSource(l.sourcePage);
+                        return (
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className="font-medium text-gray-800">{s.lp}</span>
+                            {s.channel && (
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                                  s.channel === "Popup"
+                                    ? "bg-amber-100 text-amber-700"
+                                    : "bg-blue-100 text-blue-700"
+                                }`}
+                              >
+                                {s.channel}
+                              </span>
+                            )}
+                          </span>
+                        );
+                      })()}
+                    </td>
                     <td className="px-4 py-3 text-gray-500">{details || "-"}</td>
                     <td className="px-4 py-3 text-right">
                       <DeleteLeadButton id={l.id!} name={l.name} />

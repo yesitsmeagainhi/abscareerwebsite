@@ -17,6 +17,8 @@ const schema = z.object({
   email: z.string().trim().email().max(120).optional().or(z.literal("")),
   course: z.string().trim().max(120).optional(),
   city: z.string().trim().max(80).optional(),
+  category: z.string().trim().max(60).optional(),
+  percentage12: z.string().trim().max(20).optional(),
   sourcePage: z.string().trim().max(200).optional(),
   // Honeypot: real users never see or fill this.
   company: z.string().optional(),

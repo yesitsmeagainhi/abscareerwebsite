@@ -1,9 +1,14 @@
+import Link from "next/link";
+
 import { dbConfigured } from "@/lib/db";
 import { getLpStats } from "@/lib/analytics";
 
 export const dynamic = "force-dynamic";
 
-const PAGE = "gnm-nursing-mumbai";
+const LPS = [
+  { slug: "gnm-nursing-mumbai", label: "GNM Nursing" },
+  { slug: "bsc-nursing-mumbai", label: "BSc Nursing" },
+];
 
 function pct(n: number, d: number): string {
   if (!d) return "0%";
@@ -17,15 +22,39 @@ const EVENT_LABEL: Record<string, string> = {
   form_submit: "Form submit",
 };
 
-export default async function AdminAnalytics() {
-  const stats = dbConfigured ? await getLpStats(PAGE, 30) : null;
+export default async function AdminAnalytics({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page } = await searchParams;
+  const current = LPS.find((l) => l.slug === page) || LPS[0];
+  const stats = dbConfigured ? await getLpStats(current.slug, 30) : null;
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900">LP Analytics</h1>
       <p className="mt-1 text-sm text-gray-500">
-        GNM Nursing landing page (<code>/lp/{PAGE}</code>) — visitors and actions, tracked
-        first-party.
+        Landing-page visitors and actions, tracked first-party.
+      </p>
+
+      <div className="mt-4 flex gap-2">
+        {LPS.map((l) => (
+          <Link
+            key={l.slug}
+            href={`/admin/analytics?page=${l.slug}`}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium ${
+              l.slug === current.slug
+                ? "bg-brand text-white"
+                : "border border-gray-300 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {l.label}
+          </Link>
+        ))}
+      </div>
+      <p className="mt-3 text-xs text-gray-400">
+        Showing <code>/lp/{current.slug}</code>
       </p>
 
       {!stats ? (
