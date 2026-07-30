@@ -8,8 +8,12 @@ import { track } from "@/lib/track";
 // offers a WhatsApp chat or a call back from a GNM admission expert, capturing
 // just name + number. Saves to the same /api/enquiry pipeline as the main form.
 
-const SESSION_KEY = "abs_popup_seen";
-const DELAY_MS = 10000;
+const STORE_KEY = "abs_popup_day";
+const DELAY_MS = 6000;
+
+function today(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function fireGtag(event: string) {
   try {
@@ -31,15 +35,16 @@ export default function LpPopup({ whatsappNumber }: { whatsappNumber?: string })
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
+    // Show at most once per calendar day (per browser).
     try {
-      if (sessionStorage.getItem(SESSION_KEY)) return;
+      if (localStorage.getItem(STORE_KEY) === today()) return;
     } catch {
       /* ignore */
     }
     const t = window.setTimeout(() => {
       setOpen(true);
       try {
-        sessionStorage.setItem(SESSION_KEY, "1");
+        localStorage.setItem(STORE_KEY, today());
       } catch {
         /* ignore */
       }
