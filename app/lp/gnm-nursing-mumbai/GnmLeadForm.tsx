@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { track } from "@/lib/track";
+
 // The signature "eligibility slip" form. On submit it posts a single lead to
 // the site's real /api/enquiry endpoint (→ MySQL + counsellor email), then
 // redirects to the dedicated /thank-you page — a real page load at a stable URL
@@ -63,6 +65,8 @@ export default function GnmLeadForm() {
           course: "GNM Nursing",
         });
       }
+      // First-party analytics (admin dashboard).
+      track("form_submit", { location: "form" });
 
       // Real page load at a stable URL → Google Ads "page load" conversion.
       window.location.assign(THANK_YOU_URL);

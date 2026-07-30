@@ -2,6 +2,8 @@
 
 import type { AnchorHTMLAttributes } from "react";
 
+import { track } from "@/lib/track";
+
 // A plain anchor that fires a GA4 event on click before navigating. Used for
 // the Call and WhatsApp buttons so their clicks show up in GA4 (and can be
 // imported into Google Ads as conversions). gtag sends via sendBeacon, so the
@@ -24,6 +26,9 @@ export default function TrackedLink({ event, eventParams, children, onClick, ...
         } catch {
           /* gtag not loaded — navigation still proceeds */
         }
+        // First-party analytics (admin dashboard).
+        const loc = (eventParams as { location?: string } | undefined)?.location;
+        track(event, { location: loc });
         onClick?.(e);
       }}
     >

@@ -6,6 +6,7 @@ import { getSiteSettings } from "@/lib/content";
 import { whatsappLink } from "@/lib/site";
 
 import GnmLeadForm from "./GnmLeadForm";
+import LpTracker from "./LpTracker";
 import TrackedLink from "./TrackedLink";
 import "./gnm-lp.css";
 
@@ -81,6 +82,7 @@ export default async function GnmNursingLandingPage() {
       }
     >
       <JsonLd data={faqSchema(FAQS)} />
+      <LpTracker page="gnm-nursing-mumbai" />
 
       <div className="topbar">
         <div className="wrap">

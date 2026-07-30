@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/settings", label: "Settings" },
   { href: "/admin/leads", label: "Leads" },
+  { href: "/admin/analytics", label: "Analytics" },
 ];
 
 export const metadata = {
