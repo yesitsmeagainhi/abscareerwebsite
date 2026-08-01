@@ -181,6 +181,16 @@ html:has(.bsc-lp) { scroll-behavior: smooth; }
 .bsc-lp .bar .b1 { background: var(--marigold); color: var(--ink); }
 .bsc-lp .bar .b2 { background: var(--pine); color: #fff; flex: 0 0 44%; }
 
+/* thank-you page */
+.bsc-lp .ty-wrap { min-height: 74vh; display: flex; align-items: center; justify-content: center; padding: 48px 20px; background: var(--paper); }
+.bsc-lp .ty-card { max-width: 460px; width: 100%; text-align: center; }
+.bsc-lp .ty-badge { width: 62px; height: 62px; border-radius: 50%; background: var(--mint); color: var(--pine); font-size: 30px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.bsc-lp .ty-card h2 { font-size: 24px; color: var(--pine-deep); margin-bottom: 10px; }
+.bsc-lp .ty-card p { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+.bsc-lp .ty-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.bsc-lp .ty-actions .bar-wa { background: #22C15E; color: #fff; }
+.bsc-lp .ty-back { display: inline-block; margin-top: 16px; font-size: 13px; color: var(--muted); }
+
 /* popup (shared LeadPopup uses these class names, scoped here) */
 .bsc-lp .lp-popup-overlay { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(14,35,32,.55); }
 .bsc-lp .lp-popup-card { position: relative; width: 100%; max-width: 400px; background: #fff; border-radius: 12px; box-shadow: 0 24px 60px rgba(6,32,27,.4); padding: 28px 22px 22px; }

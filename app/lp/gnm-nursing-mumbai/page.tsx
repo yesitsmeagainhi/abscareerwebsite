@@ -145,8 +145,9 @@ export default async function GnmNursingLandingPage() {
             <div className="sch-card"><div className="pct">&#8377;50,000</div><div className="who">Minority category</div><div className="cond">Per year, as applicable*</div></div>
           </div>
           <p className="sch-fine">
-            *Scholarships are subject to student eligibility, category, documentation and applicable
-            government / institutional norms. Final benefit confirmed during counselling.
+            *T&amp;C apply. Scholarship is based on available seats and eligible students, and is
+            subject to student eligibility, category, documentation and applicable government /
+            institutional norms. Final benefit is confirmed during counselling.
           </p>
           <div className="cta-row" style={{ marginTop: "22px" }}>
             <a className="btn btn-primary" href="#apply">Check Scholarship Eligibility</a>

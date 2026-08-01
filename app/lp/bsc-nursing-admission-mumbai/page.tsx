@@ -66,7 +66,7 @@ export default async function BscNursingLandingPage() {
               Fill the form and a counsellor calls you within 2 hours with the colleges that have
               seats open for your marks, your category and your district. We&apos;ll also check which
               scholarships you qualify for — <b>for most girl students, tuition is fully covered by
-              the state.</b>
+              the state.*</b>
             </p>
             <div className="chips">
               <span className="chip">16,000+ students admitted</span>
@@ -75,7 +75,7 @@ export default async function BscNursingLandingPage() {
               <span className="chip">Free counselling</span>
             </div>
           </div>
-          <BscLeadForm whatsappNumber={settings.whatsappNumber} phone={phone} />
+          <BscLeadForm />
         </div>
       </section>
 
@@ -86,7 +86,7 @@ export default async function BscNursingLandingPage() {
           <div className="lstat"><b>16,000+</b><span>Students admitted to nursing programmes</span></div>
           <div className="lstat"><b>16+</b><span>Years guiding Maharashtra admissions</span></div>
           <div className="lstat"><b>2 hrs</b><span>Typical callback time on an enquiry</span></div>
-          <div className="lstat"><b>100%</b><span>Tuition waiver available to eligible girl students</span></div>
+          <div className="lstat"><b>100%*</b><span>Tuition waiver available to eligible girl students</span></div>
         </div>
       </section>
 
@@ -135,7 +135,7 @@ export default async function BscNursingLandingPage() {
           </div>
           <p className="feenote">Indicative annual tuition. Maharashtra fees are set by the Fee Regulating Authority and vary by college, so treat these as a planning range — we confirm the exact figure for the colleges that suit you on the call. Hostel, exam, uniform and university charges are extra.</p>
           <div className="schol-hero">
-            <h3>If you&apos;re a girl student with family income under ₹8 lakh, your tuition may be 100% covered</h3>
+            <h3>If you&apos;re a girl student with family income under ₹8 lakh, your tuition may be 100% covered*</h3>
             <p>Maharashtra pays the full tuition and examination fees for female students from OBC, SEBC and EWS backgrounds in professional courses, under the Rajarshi Chhatrapati Shahu Maharaj scheme. Nursing qualifies. Most families we sit with had no idea.</p>
           </div>
           <div className="slist">
@@ -145,7 +145,7 @@ export default async function BscNursingLandingPage() {
             <div className="sitem"><div className="who">Orphan students</div><h3>Full tuition + exam fee waiver</h3><p>100% waiver for orphan students admitted to recognised professional courses through the centralised admission process.</p></div>
             <div className="sitem"><div className="who">Minority communities</div><h3>Minority scholarship for professional courses</h3><p>State scholarship for students from notified minority communities in professional and higher education courses.</p></div>
           </div>
-          <p className="caveat">These are Maharashtra government schemes, not ours — we don&apos;t fund them and we can&apos;t approve them. What we do is check which ones you qualify for, make sure your income and caste documents are ready in time, and walk you through the MahaDBT application so it isn&apos;t rejected. Eligibility rules change between years; we check yours against the current GR on the call.</p>
+          <p className="caveat">These are Maharashtra government schemes, not ours — we don&apos;t fund them and we can&apos;t approve them. What we do is check which ones you qualify for, make sure your income and caste documents are ready in time, and walk you through the MahaDBT application so it isn&apos;t rejected. Eligibility rules change between years; we check yours against the current GR on the call. <b>*T&amp;C apply — scholarship is based on available seats and eligible students.</b></p>
           <div className="avail-cta"><a href="#form-top" className="inline-btn">Check my scholarship eligibility</a></div>
         </div>
       </section>

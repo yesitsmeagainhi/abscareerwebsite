@@ -34,7 +34,7 @@ function fireGtag(event: string) {
   }
 }
 
-export default function BscLeadForm({ whatsappNumber, phone }: { whatsappNumber?: string; phone?: string }) {
+export default function BscLeadForm() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -46,7 +46,6 @@ export default function BscLeadForm({ whatsappNumber, phone }: { whatsappNumber?
   const [consent, setConsent] = useState(false);
   const [err, setErr] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const needsMarks = /result out|more than a year|GNM/.test(edu);
@@ -122,36 +121,12 @@ export default function BscLeadForm({ whatsappNumber, phone }: { whatsappNumber?
     }
     fireGtag("generate_lead");
     track("form_submit", { page: PAGE, location: "form" });
-    setLoading(false);
-    setDone(true);
-    scrollTop();
+    // Real page load at a stable URL → Google Ads "page load" conversion.
+    window.location.assign("/lp/bsc-nursing-admission-mumbai/thank-you");
   }
-
-  const waHref = whatsappNumber
-    ? `https://wa.me/${whatsappNumber.replace(/[^\d]/g, "")}?text=${encodeURIComponent(
-        `Hi, I want BSc Nursing admission & scholarship guidance (Mumbai, 2026-27).`,
-      )}`
-    : undefined;
 
   return (
     <div className="card" id="form-top" ref={topRef}>
-      {done ? (
-        <div style={{ textAlign: "center", padding: "14px 0" }}>
-          <h2 style={{ color: "var(--pine)" }}>Got it, {name.trim().split(" ")[0] || "there"}</h2>
-          <p style={{ fontSize: "15px", color: "var(--muted)", margin: "10px 0 16px" }}>
-            A counsellor will call you on <b>+91 {mobile}</b> within 2 hours with the colleges that
-            have seats open for your profile, and your scholarship position.
-          </p>
-          <p style={{ fontSize: "13.5px", color: "var(--muted)", marginBottom: "18px" }}>
-            Keep your marksheet handy. If you&apos;d rather not wait, message us now.
-          </p>
-          {waHref && (
-            <a className="inline-btn" href={waHref} target="_blank" rel="noopener noreferrer">
-              Message us on WhatsApp
-            </a>
-          )}
-        </div>
-      ) : (
         <>
           <h2>Check seat availability</h2>
           <p className="lede">Takes 30 seconds. A counsellor calls you within 2 hours with your matched colleges.</p>
@@ -263,7 +238,6 @@ export default function BscLeadForm({ whatsappNumber, phone }: { whatsappNumber?
           </form>
           <p className="assure">Free · No obligation · Your number is not sold to third parties</p>
         </>
-      )}
     </div>
   );
 }
