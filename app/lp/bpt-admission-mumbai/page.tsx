@@ -85,7 +85,7 @@ export default async function BptLandingPage() {
           <a href="#eligibility">BPT eligibility</a>
           <a href="#check">Check eligibility</a>
           <a href="#fees">BPT course fees</a>
-          <a href="#colleges">Branches</a>
+          <a href="#branches">Our branches</a>
           <a href="#faq">FAQs</a>
         </div>
       </nav>
@@ -372,11 +372,11 @@ export default async function BptLandingPage() {
       </section>
 
       {/* ================= BRANCHES ================= */}
-      <section className="bg-ink tight" id="colleges">
+      <section className="bg-ink tight" id="branches">
         <div className="wrap">
           <div className="sec-head">
             <span className="kicker inv">Walk in and talk</span>
-            <h2>Six branches across Mumbai</h2>
+            <h2>Six counselling branches across Mumbai</h2>
             <p className="lede">
               Searching for BPT colleges near me, or for a BPT course near me, only tells you what
               exists — not which ones you are actually eligible for, or what they will cost you after
