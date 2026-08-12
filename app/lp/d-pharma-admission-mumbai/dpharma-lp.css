@@ -305,6 +305,19 @@
   .dpharma-lp .abs-band-grid { grid-template-columns: repeat(4,1fr); }
   .dpharma-lp .abs-waiver { grid-template-columns: 1fr 1fr; }
   .dpharma-lp .abs-br { grid-template-columns: 1fr 1fr; }
+
+  /* The page is a centred 640px column, so an edge-to-edge fixed bar looks
+     broken on a wide screen. Dock it to the content column instead and float
+     it clear of the bottom edge. */
+  .dpharma-lp .abs-bar {
+    left: 50%; right: auto; transform: translateX(-50%);
+    width: min(640px, calc(100% - 36px));
+    bottom: 18px; padding: 9px;
+    border: 1px solid var(--rule); border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(14,32,25,.18);
+  }
+  .dpharma-lp .abs-bar a { padding: 12px 6px; }
+  .dpharma-lp .abs-foot { padding-bottom: 46px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dpharma-lp *, .dpharma-lp *::before, .dpharma-lp *::after { transition: none !important; animation: none !important; }
