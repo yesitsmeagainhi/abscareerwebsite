@@ -1,0 +1,311 @@
+/* ============================================================
+   ABS — D.Pharma Admission LP (v2)
+   Palette from the Indian medical-store green cross and the
+   warm marigold of a stamped fee receipt.
+   Every selector is scoped under .dpharma-lp so this bespoke
+   design (which resets bare elements) cannot leak into the rest
+   of the site. --display is injected by next/font on the wrapper.
+   ============================================================ */
+
+.dpharma-lp {
+  --ink:#0E2019;
+  --ink-soft:#3A5449;
+  --green:#0B6B4F;
+  --green-dk:#064B37;
+  --green-pale:#E7F2ED;
+  --amber:#C06E0C;
+  --amber-pale:#FCF2E0;
+  --paper:#FBFAF7;
+  --white:#FFFFFF;
+  --rule:#CBDCD4;
+  --wa:#1FA855;
+  --shadow:0 1px 2px rgba(14,32,25,.06),0 8px 24px rgba(14,32,25,.07);
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--body); font-size: 16.5px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
+}
+.dpharma-lp *, .dpharma-lp *::before, .dpharma-lp *::after { box-sizing: border-box; }
+.dpharma-lp img { max-width: 100%; display: block; }
+.dpharma-lp a { color: var(--green-dk); }
+.dpharma-lp :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; border-radius: 4px; }
+
+.dpharma-lp .abs-wrap { max-width: 640px; margin: 0 auto; padding: 0 18px; }
+.dpharma-lp .abs-h1, .dpharma-lp .abs-h2, .dpharma-lp .abs-h3 {
+  font-family: var(--display), system-ui, sans-serif; font-weight: 800;
+  font-stretch: 112%; letter-spacing: -.015em; line-height: 1.1; margin: 0;
+}
+.dpharma-lp .abs-h1 { font-size: 34px; }
+.dpharma-lp .abs-h1-yr { color: var(--green); }
+.dpharma-lp .abs-h2 { font-size: 24px; margin-bottom: 10px; }
+.dpharma-lp .abs-h3 { font-size: 18px; font-weight: 700; font-stretch: 105%; line-height: 1.25; }
+.dpharma-lp .abs-eyebrow {
+  font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-stretch: 108%;
+  font-size: 11.5px; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--green); margin: 0 0 10px;
+}
+
+/* ---------- sticky urgency bar ---------- */
+.dpharma-lp .abs-alert {
+  position: sticky; top: 0; z-index: 70; display: block;
+  height: 33px; padding: 8px 14px; line-height: 17px;
+  background: var(--amber); color: #fff; text-decoration: none; text-align: center;
+  font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 12.5px; letter-spacing: .02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dpharma-lp .abs-alert i {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: #fff; margin-right: 7px; vertical-align: 1px;
+  animation: dpPulse 1.7s ease-in-out infinite;
+}
+@keyframes dpPulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+
+/* ---------- header ---------- */
+.dpharma-lp .abs-head { position: sticky; top: 33px; z-index: 60; background: var(--white); border-bottom: 1px solid var(--rule); }
+.dpharma-lp .abs-head-in { max-width: 640px; margin: 0 auto; padding: 9px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dpharma-lp .abs-logo { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 115%; font-size: 17px; letter-spacing: -.01em; }
+.dpharma-lp .abs-logo span { color: var(--green); }
+.dpharma-lp .abs-logo small { display: block; font-family: var(--body); font-weight: 400; font-size: 10.5px; color: var(--ink-soft); margin-top: 1px; }
+.dpharma-lp .abs-head-call { font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 13.5px; background: var(--green); color: #fff; text-decoration: none; padding: 9px 14px; border-radius: 100px; white-space: nowrap; }
+
+/* ---------- hero ---------- */
+.dpharma-lp .abs-hero {
+  background: radial-gradient(120% 90% at 100% 0%, #F2F8F5 0%, rgba(242,248,245,0) 60%), var(--paper);
+  padding: 20px 0 6px;
+}
+.dpharma-lp .abs-lede { font-size: 17px; color: var(--ink-soft); margin: 12px 0 0; }
+.dpharma-lp .abs-lede strong { color: var(--ink); }
+.dpharma-lp .abs-hook { font-size: 16px; color: var(--ink-soft); margin: 12px 0 0; line-height: 1.45; }
+.dpharma-lp .abs-hook strong { color: var(--ink); font-weight: 700; }
+
+/* scholarship band — sits directly under the H1 */
+.dpharma-lp .abs-schol {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border: 1.5px solid var(--amber); border-radius: 14px;
+  background: linear-gradient(180deg, var(--amber-pale), var(--white));
+  margin: 14px 0 0; overflow: hidden;
+}
+.dpharma-lp .abs-schol-tag {
+  grid-column: 1/-1; background: var(--amber); color: #fff; text-align: center;
+  font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 10.5px;
+  letter-spacing: .13em; text-transform: uppercase; padding: 6px 8px;
+}
+.dpharma-lp .abs-schol-cell { padding: 13px 10px 12px; text-align: center; }
+.dpharma-lp .abs-schol-cell + .abs-schol-cell { border-left: 1px solid rgba(192,110,12,.28); }
+.dpharma-lp .abs-schol-n {
+  display: block; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 118%;
+  font-size: 36px; line-height: 1; letter-spacing: -.02em; color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+.dpharma-lp .abs-schol-cell.is-boys .abs-schol-n { color: var(--green-dk); }
+.dpharma-lp .abs-schol-l { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+.dpharma-lp .abs-schol-l b { color: var(--ink); font-weight: 700; }
+
+/* ---------- form card ---------- */
+.dpharma-lp .abs-card {
+  background: var(--white); border: 1px solid var(--rule); border-radius: 16px;
+  box-shadow: var(--shadow); padding: 18px 16px 16px; margin: 20px 0 0;
+}
+.dpharma-lp .abs-card-h { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 105%; font-size: 19px; line-height: 1.25; margin: 0 0 3px; }
+.dpharma-lp .abs-card-sub { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; }
+.dpharma-lp .abs-field { display: block; margin-bottom: 10px; }
+.dpharma-lp .abs-field span { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin-bottom: 5px; }
+.dpharma-lp .abs-field input {
+  width: 100%; font-family: var(--body); font-size: 16.5px; color: var(--ink);
+  padding: 14px; border: 1.5px solid var(--rule); border-radius: 11px; background: var(--white);
+}
+.dpharma-lp .abs-field input:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px rgba(11,107,79,.13); }
+.dpharma-lp .abs-submit {
+  width: 100%; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 108%; font-size: 17px;
+  background: var(--green); color: #fff; border: 0; border-radius: 11px; padding: 16px; cursor: pointer; margin-top: 4px;
+}
+.dpharma-lp .abs-submit:hover { background: var(--green-dk); }
+.dpharma-lp .abs-submit[disabled] { opacity: .6; cursor: default; }
+.dpharma-lp .abs-formnote { font-size: 12.5px; color: var(--ink-soft); text-align: center; margin: 9px 0 0; }
+.dpharma-lp .abs-err { color: #B3261E; font-size: 13.5px; margin: 8px 0 0; }
+.dpharma-lp .abs-trustline { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 12px 2px 0; font-size: 12.5px; color: var(--ink-soft); }
+.dpharma-lp .abs-trustline i { font-style: normal; color: var(--green); }
+
+/* ---------- trust band ---------- */
+.dpharma-lp .abs-band { background: var(--ink); color: #DCE8E2; padding: 16px 0; margin-top: 24px; }
+.dpharma-lp .abs-band-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px 10px; text-align: center; }
+.dpharma-lp .abs-band b { display: block; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 112%; font-size: 20px; color: #fff; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dpharma-lp .abs-band small { font-size: 11.5px; letter-spacing: .04em; opacity: .8; }
+
+/* ---------- sections ---------- */
+.dpharma-lp .abs-sec { padding: 34px 0; }
+.dpharma-lp .abs-sec--pale { background: var(--green-pale); }
+.dpharma-lp .abs-sec--white { background: var(--white); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.dpharma-lp .abs-sec p { margin: 0 0 13px; color: var(--ink-soft); }
+.dpharma-lp .abs-sec p:last-child { margin-bottom: 0; }
+
+/* waiver cards */
+.dpharma-lp .abs-waiver { display: grid; gap: 11px; margin: 16px 0 0; }
+.dpharma-lp .abs-w-card { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
+.dpharma-lp .abs-w-card--hero { border: 1.5px solid var(--amber); background: linear-gradient(180deg, var(--amber-pale), var(--white)); }
+.dpharma-lp .abs-w-pct { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 118%; font-size: 34px; line-height: 1; letter-spacing: -.02em; color: var(--green-dk); }
+.dpharma-lp .abs-w-card--hero .abs-w-pct { color: var(--amber); }
+.dpharma-lp .abs-w-who { font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 15px; margin: 6px 0 4px; }
+.dpharma-lp .abs-w-card p { font-size: 14px; margin: 0; color: var(--ink-soft); }
+
+/* conditions — self-qualifying block */
+.dpharma-lp .abs-cond { background: var(--white); border: 1.5px solid var(--green); border-radius: 14px; padding: 16px; margin-top: 16px; }
+.dpharma-lp .abs-cond h3 { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 16px; margin: 0 0 10px; }
+.dpharma-lp .abs-cond ul { list-style: none; padding: 0; margin: 0; }
+.dpharma-lp .abs-cond li { position: relative; padding: 0 0 9px 27px; font-size: 15px; color: var(--ink-soft); }
+.dpharma-lp .abs-cond li:last-child { padding-bottom: 0; }
+.dpharma-lp .abs-cond li:before { content: ""; position: absolute; left: 0; top: 8px; width: 11px; height: 11px; border-radius: 3px; background: var(--green); }
+.dpharma-lp .abs-cond li b { color: var(--ink); }
+
+/* ---------- SIGNATURE: the fee receipt ---------- */
+.dpharma-lp .abs-receipt {
+  background: var(--white); margin: 18px 0 0; padding: 20px 18px;
+  font-family: var(--mono); font-size: 14px; color: var(--ink-soft);
+  box-shadow: var(--shadow); position: relative;
+}
+.dpharma-lp .abs-receipt:before, .dpharma-lp .abs-receipt:after {
+  content: ""; position: absolute; left: 0; right: 0; height: 8px;
+  background: radial-gradient(circle at 5px 0, transparent 0 5px, var(--white) 5px);
+  background-size: 10px 8px;
+}
+.dpharma-lp .abs-receipt:before { top: -7px; transform: rotate(180deg); }
+.dpharma-lp .abs-receipt:after { bottom: -7px; }
+.dpharma-lp .abs-rc-head { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); text-align: center; margin: 0 0 3px; }
+.dpharma-lp .abs-rc-sub { text-align: center; font-size: 11.5px; letter-spacing: .06em; margin: 0 0 14px; text-transform: uppercase; }
+.dpharma-lp .abs-rc-line { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; }
+.dpharma-lp .abs-rc-line b { font-weight: 400; }
+.dpharma-lp .abs-rc-amt { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dpharma-lp .abs-rc-rule { border: 0; border-top: 1px dashed var(--rule); margin: 10px 0; }
+.dpharma-lp .abs-rc-total { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; color: var(--ink); }
+.dpharma-lp .abs-rc-total .abs-rc-amt { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--amber); opacity: .65; }
+.dpharma-lp .abs-rc-stamp { margin: 14px 0 0; padding: 12px; border: 2px solid var(--amber); border-radius: 8px; text-align: center; background: var(--amber-pale); }
+.dpharma-lp .abs-rc-stamp span { display: block; font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); margin-bottom: 2px; }
+.dpharma-lp .abs-rc-stamp b { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 118%; font-size: 38px; line-height: 1; color: var(--amber); font-variant-numeric: tabular-nums; }
+.dpharma-lp .abs-rc-foot { font-size: 11px; text-align: center; margin: 12px 0 0; line-height: 1.5; }
+
+/* fee table */
+.dpharma-lp .abs-fee { width: 100%; border-collapse: collapse; margin: 14px 0 0; font-size: 15px; }
+.dpharma-lp .abs-fee th, .dpharma-lp .abs-fee td { text-align: left; padding: 11px 8px; border-bottom: 1px solid var(--rule); }
+.dpharma-lp .abs-fee th { font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.dpharma-lp .abs-fee td.abs-amt { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.dpharma-lp .abs-fee th.abs-amt-h { text-align: right; }
+
+/* list */
+.dpharma-lp .abs-list { list-style: none; padding: 0; margin: 14px 0 0; }
+.dpharma-lp .abs-list li { position: relative; padding: 0 0 12px 26px; color: var(--ink-soft); font-size: 15.5px; }
+.dpharma-lp .abs-list li:before { content: ""; position: absolute; left: 0; top: 9px; width: 11px; height: 11px; border-radius: 3px; background: var(--green); }
+.dpharma-lp .abs-list li b { color: var(--ink); font-weight: 700; }
+
+/* steps */
+.dpharma-lp .abs-steps { counter-reset: s; list-style: none; padding: 0; margin: 16px 0 0; }
+.dpharma-lp .abs-steps li { position: relative; padding: 0 0 16px 40px; font-size: 15.5px; color: var(--ink-soft); }
+.dpharma-lp .abs-steps li:before {
+  counter-increment: s; content: counter(s); position: absolute; left: 0; top: 0;
+  width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--white); border: 1.5px solid var(--green); color: var(--green-dk);
+  font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 13px;
+}
+.dpharma-lp .abs-steps li:after { content: ""; position: absolute; left: 13px; top: 29px; bottom: 4px; width: 1.5px; background: var(--rule); }
+.dpharma-lp .abs-steps li:last-child:after { display: none; }
+.dpharma-lp .abs-steps li b { display: block; color: var(--ink); font-weight: 700; margin-bottom: 1px; }
+
+/* branches */
+.dpharma-lp .abs-br { display: grid; gap: 12px; margin-top: 16px; }
+.dpharma-lp .abs-br-card { background: var(--white); border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
+.dpharma-lp .abs-br-card.is-near { border: 1.5px solid var(--green); box-shadow: var(--shadow); order: -1; }
+.dpharma-lp .abs-br-tag { display: none; font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: #fff; background: var(--green); padding: 3px 9px; border-radius: 100px; margin-bottom: 9px; }
+.dpharma-lp .abs-br-card.is-near .abs-br-tag { display: inline-block; }
+.dpharma-lp .abs-br-card h3 { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 18px; margin: 0 0 5px; }
+.dpharma-lp .abs-br-card address { font-style: normal; font-size: 14.5px; color: var(--ink-soft); margin-bottom: 9px; }
+.dpharma-lp .abs-br-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.dpharma-lp .abs-br-links a { font-size: 13.5px; font-weight: 600; text-decoration: none; border: 1.5px solid var(--rule); border-radius: 100px; padding: 8px 13px; color: var(--ink); }
+.dpharma-lp .abs-br-links a.is-p { background: var(--green); border-color: var(--green); color: #fff; }
+.dpharma-lp .abs-br-time { font-size: 13px; color: var(--ink-soft); margin: 9px 0 0; }
+
+/* faq */
+.dpharma-lp .abs-faq { border-top: 1px solid var(--rule); margin-top: 16px; }
+.dpharma-lp .abs-faq details { border-bottom: 1px solid var(--rule); }
+.dpharma-lp .abs-faq summary { cursor: pointer; list-style: none; padding: 15px 30px 15px 0; position: relative; font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 16px; line-height: 1.3; }
+.dpharma-lp .abs-faq summary::-webkit-details-marker { display: none; }
+.dpharma-lp .abs-faq summary:after { content: "+"; position: absolute; right: 4px; top: 13px; font-size: 22px; font-weight: 400; color: var(--green); }
+.dpharma-lp .abs-faq details[open] summary:after { content: "\2013"; }
+.dpharma-lp .abs-faq .abs-a { padding: 0 0 15px; font-size: 15px; color: var(--ink-soft); }
+.dpharma-lp .abs-faq .abs-a p { margin: 0 0 9px; }
+.dpharma-lp .abs-faq .abs-a p:last-child { margin: 0; }
+
+/* nudge */
+.dpharma-lp .abs-nudge {
+  display: block; width: 100%; margin-top: 18px; text-align: center; text-decoration: none;
+  font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 106%; font-size: 16px;
+  background: var(--ink); color: #fff; padding: 15px; border-radius: 11px;
+}
+.dpharma-lp .abs-nudge.is-amber { background: var(--amber); }
+
+/* footer */
+.dpharma-lp .abs-foot { background: var(--ink); color: #9FB6AC; padding: 26px 0 96px; font-size: 12.5px; line-height: 1.65; }
+.dpharma-lp .abs-foot p { margin: 0 0 10px; }
+.dpharma-lp .abs-foot b { color: #DCE8E2; }
+
+/* sticky bar */
+.dpharma-lp .abs-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; display: flex; gap: 8px;
+  padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.97); border-top: 1px solid var(--rule); backdrop-filter: blur(8px);
+}
+.dpharma-lp .abs-bar a { flex: 1; text-align: center; text-decoration: none; border-radius: 11px; padding: 13px 6px; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 15px; }
+.dpharma-lp .abs-bar .abs-bar-call { background: var(--green); color: #fff; }
+.dpharma-lp .abs-bar .abs-bar-wa { background: var(--wa); color: #fff; }
+
+/* thank-you page */
+.dpharma-lp .abs-ty { min-height: 68vh; display: flex; align-items: center; justify-content: center; padding: 40px 18px; }
+.dpharma-lp .abs-ty-card { max-width: 460px; width: 100%; text-align: center; background: var(--white); border: 1px solid var(--rule); border-radius: 18px; box-shadow: var(--shadow); padding: 28px 22px 24px; }
+.dpharma-lp .abs-ty-badge { width: 60px; height: 60px; border-radius: 50%; background: var(--green-pale); color: var(--green); display: grid; place-items: center; font-size: 29px; font-weight: 800; margin: 0 auto 14px; }
+.dpharma-lp .abs-ty-card p { color: var(--ink-soft); font-size: 15px; margin: 0 0 10px; }
+.dpharma-lp .abs-ty-acts { display: grid; gap: 10px; margin-top: 18px; }
+.dpharma-lp .abs-ty-acts a { display: block; text-align: center; text-decoration: none; border-radius: 11px; padding: 14px; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 16px; }
+.dpharma-lp .abs-ty-acts .is-call { background: var(--green); color: #fff; }
+.dpharma-lp .abs-ty-acts .is-wa { background: var(--wa); color: #fff; }
+.dpharma-lp .abs-ty-back { display: inline-block; margin-top: 15px; font-size: 13px; color: var(--ink-soft); }
+
+/* shared LeadPopup, scoped to this LP */
+.dpharma-lp .lp-popup-overlay {
+  position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center;
+  padding: 18px; background: rgba(14,32,25,.62); backdrop-filter: blur(3px);
+}
+.dpharma-lp .lp-popup-card {
+  width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;
+  background: var(--white); border-radius: 18px; padding: 20px 18px 18px;
+  position: relative; box-shadow: 0 20px 60px rgba(14,32,25,.35); animation: dpPop .22s ease-out;
+}
+@keyframes dpPop { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+.dpharma-lp .lp-popup-close { position: absolute; top: 11px; right: 11px; width: 34px; height: 34px; padding: 0; border: 0; background: var(--green-pale); border-radius: 50%; font-size: 20px; line-height: 1; color: var(--ink-soft); cursor: pointer; }
+.dpharma-lp .lp-popup-close:hover { background: var(--rule); }
+.dpharma-lp .lp-popup-eyebrow { display: inline-block; background: var(--amber); color: #fff; font-family: var(--display), system-ui, sans-serif; font-weight: 700; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; margin-bottom: 11px; }
+.dpharma-lp .lp-popup-title { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 108%; font-size: 22px; line-height: 1.15; letter-spacing: -.015em; margin: 0 0 7px; }
+.dpharma-lp .lp-popup-sub { font-size: 14.5px; color: var(--ink-soft); margin: 0 0 14px; }
+.dpharma-lp .lp-popup-card .field { margin-bottom: 10px; }
+.dpharma-lp .lp-popup-card input { width: 100%; font-family: var(--body); font-size: 16.5px; color: var(--ink); padding: 14px; border: 1.5px solid var(--rule); border-radius: 11px; background: var(--white); }
+.dpharma-lp .lp-popup-card input:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px rgba(11,107,79,.13); }
+.dpharma-lp .lp-popup-card .err { color: #B3261E; font-size: 13.5px; margin: 8px 0 0; }
+.dpharma-lp .lp-popup-actions { display: grid; gap: 9px; margin-top: 4px; }
+.dpharma-lp .lp-popup-actions .btn { width: 100%; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-stretch: 108%; font-size: 16px; background: var(--green); color: #fff; border: 0; border-radius: 11px; padding: 15px; cursor: pointer; }
+.dpharma-lp .lp-popup-actions .btn:disabled { opacity: .6; cursor: default; }
+.dpharma-lp .lp-popup-actions .bar-wa { background: var(--wa); }
+.dpharma-lp .lp-popup-note { font-size: 12.5px; color: var(--ink-soft); text-align: center; margin: 9px 0 0; }
+.dpharma-lp .lp-popup-thanks { text-align: center; padding: 6px 0; }
+.dpharma-lp .lp-popup-badge { width: 54px; height: 54px; border-radius: 50%; background: var(--green-pale); color: var(--green); display: grid; place-items: center; font-size: 26px; font-weight: 800; margin: 0 auto 12px; }
+.dpharma-lp .lp-popup-thanks h3 { font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 21px; margin: 0 0 8px; }
+.dpharma-lp .lp-popup-thanks p { font-size: 14.5px; color: var(--ink-soft); margin: 0 0 14px; }
+.dpharma-lp .lp-popup-thanks .btn { width: 100%; font-family: var(--display), system-ui, sans-serif; font-weight: 800; font-size: 16px; background: var(--green); color: #fff; border: 0; border-radius: 11px; padding: 14px; cursor: pointer; }
+
+@media (min-width:600px) {
+  .dpharma-lp .abs-h1 { font-size: 44px; }
+  .dpharma-lp .abs-h2 { font-size: 28px; }
+  .dpharma-lp .abs-band-grid { grid-template-columns: repeat(4,1fr); }
+  .dpharma-lp .abs-waiver { grid-template-columns: 1fr 1fr; }
+  .dpharma-lp .abs-br { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dpharma-lp *, .dpharma-lp *::before, .dpharma-lp *::after { transition: none !important; animation: none !important; }
+}
