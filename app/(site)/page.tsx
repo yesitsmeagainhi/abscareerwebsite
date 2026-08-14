@@ -17,24 +17,32 @@ export const metadata: Metadata = {
 };
 
 const TRUST = [
-  { stat: "16+", label: "Years of experience" },
-  { stat: "16K+", label: "Students enrolled" },
-  { stat: "88K+", label: "Counselling sessions" },
-  { stat: "6", label: "Branches in Mumbai" },
+  { stat: "2009", label: "Guiding students since" },
+  { stat: "16,000+", label: "Students guided" },
+  { stat: "6", label: "Branches across Mumbai" },
+  { stat: "₹0", label: "Our fee to students" },
 ];
 
-const WHY = [
+// Decision help, not a sales pitch. Each card answers a question students
+// actually arrive with, and sends them to the page that answers it properly.
+const DECISIONS = [
   {
-    title: "Verified colleges only",
-    body: "We recommend INC / State-Council recognised institutes — no fake promises, no surprises.",
+    title: "D.Pharma or B.Pharma?",
+    body: "D.Pharma is two years and gets you registered as a pharmacist — enough to run your own medical store. B.Pharma is four years and opens QC, QA and the industry ladder. If you want the shop, the diploma is the shorter road; if you want industry, plan for the degree.",
+    href: "/careers-after-pharmacy/higher-studies",
+    cta: "Compare the study paths",
   },
   {
-    title: "End-to-end support",
-    body: "From course selection to document submission, our counsellors handle the whole process with you.",
+    title: "A job, or a business of your own?",
+    body: "Pharmacy is one of very few courses after 12th where you can end up owning the business, because a retail drug licence needs a registered pharmacist. Most students never hear this until they are already enrolled.",
+    href: "/careers-after-pharmacy/medical-store-owner",
+    cta: "How the medical-store route works",
   },
   {
-    title: "Honest fee guidance",
-    body: "We explain the real fee structure upfront so you can plan with confidence.",
+    title: "No NEET score. What now?",
+    body: "Neither pharmacy course needs NEET — admission runs through DTE on your Class 12 marks. That makes pharmacy the most practical medical-side route for students who did not write NEET or did not clear it.",
+    href: "/d-pharma-admission-2026",
+    cta: "See the eligibility and process",
   },
 ];
 
@@ -88,12 +96,28 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
-            <h2 className="text-xl font-bold text-gray-900">Get Free Admission Guidance</h2>
-            <p className="mb-4 mt-1 text-sm text-gray-500">
-              Tell us a bit about you — we&apos;ll call you back.
+          {/* Editorial panel, not a form. The hero's job is to show where the
+              course leads — the enquiry form sits at the foot of the page. */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-6">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-brand">
+              Where it leads
+            </h2>
+            <ul className="mt-4 divide-y divide-gray-100">
+              {getCareers().map((c) => (
+                <li key={c.slug}>
+                  <Link
+                    href={`${CAREERS_BASE}/${c.slug}`}
+                    className="flex items-baseline justify-between gap-4 py-2.5 transition hover:text-brand"
+                  >
+                    <span className="font-medium text-gray-900">{c.name}</span>
+                    <span className="shrink-0 text-xs text-gray-500">{c.salary[0]?.range}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-xs text-gray-500">
+              Indicative starting figures for Mumbai. No one can guarantee a salary or a placement.
             </p>
-            <EnquiryForm courses={courseTitles} variant="compact" />
           </div>
         </div>
       </section>
@@ -113,9 +137,9 @@ export default async function HomePage() {
       {/* Courses */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Courses we help you get into</h2>
+          <h2 className="text-3xl font-bold text-gray-900">The courses these careers start from</h2>
           <p className="mt-2 text-gray-600">
-            Choose a course to see eligibility, scope, and admission guidance.
+            Eligibility, duration, fees and the admission process for each.
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -162,17 +186,23 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Why ABS */}
+      {/* Decision help — replaces the old "why choose us" block. */}
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
-            Why students choose ABS
-          </h2>
+          <div className="mb-8 max-w-2xl">
+            <h2 className="text-3xl font-bold text-gray-900">The three questions students arrive with</h2>
+            <p className="mt-2 text-gray-600">
+              Worth working out before you pick a course, not after.
+            </p>
+          </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {WHY.map((w) => (
-              <div key={w.title} className="rounded-xl border border-gray-200 bg-white p-6">
-                <h3 className="text-lg font-semibold text-gray-900">{w.title}</h3>
-                <p className="mt-2 text-sm text-gray-600">{w.body}</p>
+            {DECISIONS.map((d) => (
+              <div key={d.title} className="flex flex-col rounded-xl border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900">{d.title}</h3>
+                <p className="mt-2 flex-1 text-sm text-gray-600">{d.body}</p>
+                <Link href={d.href} className="mt-4 text-sm font-semibold text-brand hover:underline">
+                  {d.cta} →
+                </Link>
               </div>
             ))}
           </div>
@@ -209,7 +239,7 @@ export default async function HomePage() {
       <section className="bg-gray-50">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Popular admission searches</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Guidance near you</h2>
             <p className="mt-2 text-gray-600">
               Get local, area-specific admission guidance across Mumbai.
             </p>
@@ -262,14 +292,13 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Closing CTA with full form */}
+      {/* One quiet enquiry point, at the foot of the page rather than in the hero. */}
       <section className="mx-auto max-w-3xl px-4 py-16">
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-          <h2 className="text-center text-2xl font-bold text-gray-900">
-            Ready to start your admission?
-          </h2>
-          <p className="mb-6 mt-1 text-center text-gray-600">
-            Fill the form and our counsellor will guide you for free.
+        <div className="rounded-2xl border border-gray-200 bg-white p-8">
+          <h2 className="text-2xl font-bold text-gray-900">Have a question?</h2>
+          <p className="mb-6 mt-1 text-gray-600">
+            Ask it and a counsellor will answer — about a course, a career path, fees, or whether
+            any of this fits your marks. There is no charge, and no obligation to enrol anywhere.
           </p>
           <EnquiryForm courses={courseTitles} />
         </div>

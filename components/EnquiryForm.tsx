@@ -104,7 +104,7 @@ export default function EnquiryForm({ courses = [], defaultCourse, variant = "de
         disabled={status === "loading"}
         className="w-full rounded-lg bg-brand px-4 py-3 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
       >
-        {status === "loading" ? "Submitting…" : "Get Free Admission Guidance"}
+        {status === "loading" ? "Sending…" : "Send my question"}
       </button>
       <p className="text-center text-xs text-gray-500">
         We respect your privacy. Your details are only used to contact you about admissions.
