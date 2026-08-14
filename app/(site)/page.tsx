@@ -5,6 +5,7 @@ import CourseCard from "@/components/CourseCard";
 import EnquiryForm from "@/components/EnquiryForm";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/Schema";
 import { getBlogPosts } from "@/lib/blog";
+import { CAREERS_BASE, getCareers } from "@/lib/careers";
 import { getBranches, getCourses, getSiteSettings } from "@/lib/content";
 import { courseKeyword, locationSlug } from "@/lib/locations";
 import { formatDate } from "@/lib/site";
@@ -64,21 +65,25 @@ export default async function HomePage() {
               {settings.tagline}
             </span>
             <h1 className="mt-4 text-4xl font-bold leading-tight text-gray-900 sm:text-5xl">
-              D.Pharm, Nursing & Paramedical Admissions 2026, made simple.
+              Build a pharmacy career. Admissions 2026, made simple.
             </h1>
-            <p className="mt-4 text-lg text-gray-600">{settings.description}</p>
+            <p className="mt-4 text-lg text-gray-600">
+              D.Pharma and B.Pharma admission guidance in Mumbai — no NEET needed. We start with
+              where it leads: your own medical store, hospital and government pharmacist posts, or
+              the pharma industry. Nursing and paramedical admissions too.
+            </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/courses"
+                href="/careers-after-pharmacy"
                 className="rounded-lg bg-brand px-6 py-3 font-semibold text-white transition hover:bg-brand-dark"
               >
-                Explore Courses
+                Careers After Pharmacy
               </Link>
               <Link
-                href="/contact"
+                href="/courses"
                 className="rounded-lg border border-brand px-6 py-3 font-semibold text-brand transition hover:bg-brand-light"
               >
-                Talk to a Counsellor
+                Explore Courses
               </Link>
             </div>
           </div>
@@ -120,8 +125,45 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Why ABS */}
+      {/* Careers after pharmacy — the site's lead story, and the internal-link
+          hub into the six career guides. */}
       <section className="bg-gray-50">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-gray-900">Where a pharmacy course takes you</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-gray-600">
+              Most families ask what the course costs. The better question is what it leads to —
+              including the one path where you end up owning the business.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {getCareers().map((c) => (
+              <Link
+                key={c.slug}
+                href={`${CAREERS_BASE}/${c.slug}`}
+                className="flex flex-col rounded-xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg"
+              >
+                <h3 className="font-semibold text-gray-900">{c.name}</h3>
+                <p className="mt-2 flex-1 text-sm text-gray-600">{c.summary}</p>
+                <span className="mt-3 text-sm font-medium text-gray-500">
+                  Starts at {c.salary[0]?.range}
+                </span>
+              </Link>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              href={CAREERS_BASE}
+              className="rounded-lg bg-brand px-6 py-3 font-semibold text-white transition hover:bg-brand-dark"
+            >
+              See all careers after pharmacy →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Why ABS */}
+      <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
             Why students choose ABS

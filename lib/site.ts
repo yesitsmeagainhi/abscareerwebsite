@@ -19,6 +19,7 @@ export function formatDate(input?: string): string {
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
+  { href: "/careers-after-pharmacy", label: "Pharmacy Careers" },
   { href: "/branches", label: "Branches" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },

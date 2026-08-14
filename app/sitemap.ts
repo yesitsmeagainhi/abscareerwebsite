@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { getCareerSlugs } from "@/lib/careers";
 import { getBranchSlugs, getCourseSlugs } from "@/lib/content";
 import { getBlogPosts } from "@/lib/blog";
 import { getLocationSlugs } from "@/lib/locations";
@@ -18,14 +19,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getBlogPosts();
   const lastModified = new Date(CONTENT_UPDATED);
 
-  const staticRoutes = ["", "/courses", "/branches", "/blog", "/about", "/contact"].map(
-    (path) => ({
-      url: `${SITE_URL}${path}`,
-      lastModified,
-      changeFrequency: "weekly" as const,
-      priority: path === "" ? 1 : 0.8,
-    }),
-  );
+  const staticRoutes = [
+    "",
+    "/courses",
+    "/careers-after-pharmacy",
+    "/branches",
+    "/blog",
+    "/about",
+    "/contact",
+  ].map((path) => ({
+    url: `${SITE_URL}${path}`,
+    lastModified,
+    changeFrequency: "weekly" as const,
+    priority: path === "" ? 1 : 0.8,
+  }));
+
+  // Careers after pharmacy — one guide per path.
+  const careerRoutes = getCareerSlugs().map((slug) => ({
+    url: `${SITE_URL}/careers-after-pharmacy/${slug}`,
+    lastModified,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
   // Course landing pages live at the root (flat SEO URLs).
   const courseRoutes = courseSlugs.map((slug) => ({
@@ -67,6 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...careerRoutes,
     ...courseRoutes,
     ...locationRoutes,
     ...localityRoutes,

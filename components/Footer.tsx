@@ -38,6 +38,8 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
             <li><Link href="/b-pharma-admission-2026" className="hover:text-brand">B.Pharm Admission 2026</Link></li>
             <li><Link href="/gnm-nursing-admission-2026" className="hover:text-brand">GNM Nursing 2026</Link></li>
             <li><Link href="/bsc-nursing-admission-2026" className="hover:text-brand">B.Sc Nursing 2026</Link></li>
+            <li><Link href="/careers-after-pharmacy" className="hover:text-brand">Careers After Pharmacy</Link></li>
+            <li><Link href="/careers-after-pharmacy/medical-store-owner" className="hover:text-brand">Open a Medical Store</Link></li>
             <li><Link href="/blog" className="hover:text-brand">Admission Blog</Link></li>
           </ul>
         </div>

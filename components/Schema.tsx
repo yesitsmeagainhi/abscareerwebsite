@@ -269,3 +269,27 @@ export function breadcrumbSchema(items: { name: string; path: string }[]) {
     })),
   };
 }
+
+/**
+ * Occupation schema for a "career after pharmacy" page. Salary is deliberately
+ * omitted from the structured data — the on-page ranges are indicative and
+ * publishing them as machine-readable `estimatedSalary` would overstate their
+ * precision.
+ */
+export function occupationSchema(career: {
+  name: string;
+  metaDescription: string;
+  slug: string;
+  entryVia: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Occupation",
+    name: career.name,
+    description: career.metaDescription,
+    url: `${SITE_URL}/careers-after-pharmacy/${career.slug}`,
+    occupationLocation: { "@type": "City", name: "Mumbai" },
+    qualifications: career.entryVia.join(", "),
+    industry: "Pharmacy and pharmaceuticals",
+  };
+}
